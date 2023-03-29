@@ -42,7 +42,7 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void retrieveStores() throws Exception {
+    public void retrieveStaffs() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
@@ -60,7 +60,7 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void deleteStore() throws Exception {
+    public void deleteStaff() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);

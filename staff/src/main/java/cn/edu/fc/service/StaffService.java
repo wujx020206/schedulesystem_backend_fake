@@ -1,9 +1,9 @@
 package cn.edu.fc.service;
 
 import cn.edu.fc.dao.StaffDao;
+import cn.edu.fc.dao.StoreDao;
 import cn.edu.fc.dao.bo.Store;
 import cn.edu.fc.dao.bo.Staff;
-import cn.edu.fc.dao.openfeign.StoreDao;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.ReturnNo;
 import cn.edu.fc.javaee.core.model.dto.PageDto;
@@ -85,7 +85,7 @@ public class StaffService {
     }
 
     public void createStaff(String name, String position, String phone, String email, Long shopId, UserDto user) {
-        Store shop = this.storeDao.getStoreById(shopId).getData();
+        Store shop = this.storeDao.findById(shopId);
         if (null == shop) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", shopId));
         }

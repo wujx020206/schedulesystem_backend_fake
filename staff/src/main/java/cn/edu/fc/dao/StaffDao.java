@@ -1,9 +1,7 @@
 package cn.edu.fc.dao;
 
 import cn.edu.fc.dao.bo.Staff;
-import cn.edu.fc.dao.openfeign.StoreDao;
 import cn.edu.fc.javaee.core.exception.BusinessException;
-import cn.edu.fc.javaee.core.model.Constants;
 import cn.edu.fc.javaee.core.model.ReturnNo;
 import cn.edu.fc.javaee.core.model.dto.UserDto;
 import cn.edu.fc.javaee.core.util.RedisUtil;
