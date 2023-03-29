@@ -45,6 +45,8 @@ public class StoreControllerTest {
 
     private static final String CREATE_STORE = "/store/store";
 
+    private static final String UPDATE_STORE = "/store/{storeId}/store";
+
     private static final String DELETE_STORE = "/store/{storeId}/store";
 
     @BeforeAll
@@ -121,6 +123,25 @@ public class StoreControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void updateStore() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"name\": \"xicha\", \"address\": \"123\",\"size\": 123.0}";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_STORE, 1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }

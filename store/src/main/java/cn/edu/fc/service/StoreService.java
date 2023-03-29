@@ -64,9 +64,9 @@ public class StoreService {
 
     @Transactional
     public void updateStore(Long storeId, String name, String address, Float size) {
-        Store store = this.storeDao.findByNameAndAddress(name, address);
+        Store store = this.storeDao.findById(storeId);
         if (null == store) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), store.getId()));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", storeId));
         }
 
         store.setName(name);
