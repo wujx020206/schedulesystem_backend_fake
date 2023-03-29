@@ -45,17 +45,15 @@ public class AdminStoreController {
     }
 
     @PostMapping("/store")
-    public ReturnObject createStore(@Valid @RequestBody StoreVo vo,
-                                    @LoginUser UserDto user) {
-        this.storeService.createStore(vo.getName(), vo.getAddress(), vo.getSize(), user);
+    public ReturnObject createStore(@Valid @RequestBody StoreVo vo) {
+        this.storeService.createStore(vo.getName(), vo.getAddress(), vo.getSize());
         return new ReturnObject(ReturnNo.CREATED);
     }
 
     @PutMapping("/{storeId}/store")
     public ReturnObject updateStore(@PathVariable Long storeId,
-                                    @Valid @RequestBody StoreVo vo,
-                                    @LoginUser UserDto user) {
-        this.storeService.updateStore(storeId, vo.getName(),vo.getAddress(), vo.getSize(), user);
+                                    @Valid @RequestBody StoreVo vo) {
+        this.storeService.updateStore(storeId, vo.getName(),vo.getAddress(), vo.getSize());
         return new ReturnObject(ReturnNo.OK);
     }
 

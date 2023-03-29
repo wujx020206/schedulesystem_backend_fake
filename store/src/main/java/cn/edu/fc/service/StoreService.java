@@ -52,18 +52,18 @@ public class StoreService {
     }
 
     @Transactional
-    public void createStore(String name, String address, Float size, UserDto user) {
+    public void createStore(String name, String address, Float size) {
         Store store = this.storeDao.findByNameAndAddress(name, address);
         if (null != store) {
             throw new BusinessException(ReturnNo.STORE_EXIST, String.format(ReturnNo.STORE_EXIST.getMessage(), store.getId()));
         }
 
         Store ret = Store.builder().name(name).address(address).size(size).build();
-        this.storeDao.insert(store, user);
+        this.storeDao.insert(ret);
     }
 
     @Transactional
-    public void updateStore(Long storeId, String name, String address, Float size, UserDto user) {
+    public void updateStore(Long storeId, String name, String address, Float size) {
         Store store = this.storeDao.findByNameAndAddress(name, address);
         if (null == store) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), store.getId()));
@@ -72,7 +72,7 @@ public class StoreService {
         store.setName(name);
         store.setAddress(address);
         store.setSize(size);
-        this.storeDao.save(storeId, store, user);
+        this.storeDao.save(storeId, store);
     }
 
     @Transactional
