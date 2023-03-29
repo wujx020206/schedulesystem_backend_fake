@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+    inetutils:
+      ignored-interfaces: eth.*
+  application:
+    name: rule-service

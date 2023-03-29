@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+      discovery:
+        server-addr: localhost:8848
+    inetutils:
+      ignored-interfaces: eth.*
+  application:
+    name: staff-service
+

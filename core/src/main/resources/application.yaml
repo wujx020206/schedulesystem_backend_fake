@@ -1,0 +1,22 @@
+spring:
+  redis:
+    host: redis
+    port: 6379
+    database: 0
+    password: 123456
+
+schedulesystem:
+  core:
+    page-size:
+      max: 1000
+      default: 10
+  store:
+    timeout: 3600
+  staff:
+    timeout: 3600
+  rule:
+    timeout: 3600
+  forecast:
+    timeout: 3600
+
+
