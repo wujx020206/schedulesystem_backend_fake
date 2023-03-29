@@ -84,17 +84,17 @@ public class StaffService {
         return ret;
     }
 
-    public void createStaff(String name, String position, String phone, String email, Long shopId, UserDto user) {
+    public void createStaff(String name, String position, String phone, String email, Long shopId) {
         Store shop = this.storeDao.findById(shopId);
         if (null == shop) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", shopId));
         }
 
         Staff staff = Staff.builder().name(name).position(position).phone(phone).email(email).storeId(shopId).build();
-        this.staffDao.insert(staff, user);
+        this.staffDao.insert(staff);
     }
 
-    public void updateStaff(Long staffId, String name, String position, String phone, String email, Long storeId, UserDto user) {
+    public void updateStaff(Long staffId, String name, String position, String phone, String email, Long storeId) {
         Staff staff = this.staffDao.findById(staffId);
         if (null == staff) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staffId));
@@ -105,7 +105,7 @@ public class StaffService {
         staff.setPhone(phone);
         staff.setEmail(email);
         staff.setStoreId(storeId);
-        this.staffDao.save(staffId, staff, user);
+        this.staffDao.save(staffId, staff);
     }
 
     public void deleteStaff(Long staffId) {

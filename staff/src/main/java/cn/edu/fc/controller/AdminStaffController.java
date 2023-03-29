@@ -41,7 +41,7 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/{shopId}/staffs")
+    @GetMapping("/{storeId}/staffs")
     public ReturnObject getShopStaffs(@PathVariable Long storeId,
                                       @RequestParam(required = false, defaultValue = "1") Integer page,
                                       @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
@@ -56,29 +56,27 @@ public class AdminStaffController {
     }
 
     @GetMapping("/{staffName}/staff")
-    public ReturnObject findStaffByName(@PathVariable String name,
+    public ReturnObject findStaffByName(@PathVariable String staffName,
                                         @RequestParam(required = false, defaultValue = "1") Integer page,
                                         @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageDto<StaffDto> ret = this.staffService.retrieveStaffByName(name, page, pageSize);
+        PageDto<StaffDto> ret = this.staffService.retrieveStaffByName(staffName, page, pageSize);
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
     @PostMapping("/staff")
-    public ReturnObject createStaff(@Valid @RequestBody StaffVo vo,
-                                    @LoginUser UserDto user) {
-        this.staffService.createStaff(vo.getName(), vo.getPosition(), vo.getPhone(), vo.getEmail(),vo.getStoreId(), user);
+    public ReturnObject createStaff(@Valid @RequestBody StaffVo vo) {
+        this.staffService.createStaff(vo.getName(), vo.getPosition(), vo.getPhone(), vo.getEmail(),vo.getStoreId());
         return new ReturnObject(ReturnNo.CREATED);
     }
 
-    @PutMapping("{staffId}/staff")
+    @PutMapping("/{staffId}/staff")
     public ReturnObject updateStaff(@PathVariable Long staffId,
-                                    @Valid @RequestBody StaffVo vo,
-                                    @LoginUser UserDto user) {
-        this.staffService.updateStaff(staffId, vo.getName(), vo.getPosition(), vo.getPhone(), vo.getEmail(),vo.getStoreId(), user);
+                                    @Valid @RequestBody StaffVo vo) {
+        this.staffService.updateStaff(staffId, vo.getName(), vo.getPosition(), vo.getPhone(), vo.getEmail(),vo.getStoreId());
         return new ReturnObject(ReturnNo.OK);
     }
 
-    @DeleteMapping("{staffId}/staff")
+    @DeleteMapping("/{staffId}/staff")
     public ReturnObject deleteStaff(@PathVariable Long staffId) {
         this.staffService.deleteStaff(staffId);
         return new ReturnObject(ReturnNo.OK);
@@ -116,9 +114,8 @@ public class AdminStaffController {
 
     @PostMapping("/{staffId}/preference")
     public ReturnObject createStaffPreference(@PathVariable Long staffId,
-                                              @Valid @RequestBody CreatePreferenceVo vo,
-                                              @LoginUser UserDto user) {
-        this.preferenceService.createPreference(staffId, vo.getType(), vo.getValue(), user);
+                                              @Valid @RequestBody CreatePreferenceVo vo) {
+        this.preferenceService.createPreference(staffId, vo.getType(), vo.getValue());
         return new ReturnObject(ReturnNo.CREATED);
     }
 

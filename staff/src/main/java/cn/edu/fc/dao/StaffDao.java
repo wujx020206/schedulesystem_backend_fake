@@ -121,12 +121,10 @@ public class StaffDao {
         return ret;
     }
 
-    public Long insert(Staff staff, UserDto user) throws RuntimeException {
+    public Long insert(Staff staff) throws RuntimeException {
         StaffPo po = this.staffPoMapper.findByNameAndPhone(staff.getName(), staff.getPhone());
         if (null == po) {
             StaffPo staffPo = getPo(staff);
-            putUserFields(staffPo, "creator", user);
-            putGmtFields(staffPo, "create");
             this.staffPoMapper.save(staffPo);
             return staffPo.getId();
         } else {
@@ -134,13 +132,9 @@ public class StaffDao {
         }
     }
 
-    public String save(Long staffId, Staff staff, UserDto user) {
+    public String save(Long staffId, Staff staff) {
         StaffPo po = getPo(staff);
         po.setId(staffId);
-        if (null != user) {
-            putUserFields(po, "modifier", user);
-            putGmtFields(po, "modified");
-        }
         this.staffPoMapper.save(po);
         return String.format(KEY, staff.getId());
     }
