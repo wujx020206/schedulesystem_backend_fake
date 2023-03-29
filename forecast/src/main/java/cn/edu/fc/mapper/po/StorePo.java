@@ -4,29 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "data")
+@Table(name = "store")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DataPo {
+public class StorePo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long storeId;
+    private String name;
 
-    private LocalDate date;
+    private String address;
 
-    private String beginTime;
-
-    private String endTime;
-
-    private Float num;
+    private Float size;
 }

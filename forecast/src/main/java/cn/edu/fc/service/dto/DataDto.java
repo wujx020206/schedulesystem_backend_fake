@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class DataDto {
-    private Long storeId;
+    private String storeName;
 
     private LocalDate date;
 
