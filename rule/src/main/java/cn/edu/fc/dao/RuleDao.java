@@ -1,7 +1,6 @@
 package cn.edu.fc.dao;
 
 import cn.edu.fc.dao.bo.Rule;
-import cn.edu.fc.dao.openfeign.StoreDao;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.Constants;
 import cn.edu.fc.javaee.core.model.ReturnNo;
@@ -51,13 +50,8 @@ public class RuleDao {
 
     private Rule getBo(RulePo po, Optional<String> redisKey) {
         Rule bo = Rule.builder().type(po.getType()).value(po.getValue()).storeId(po.getStoreId()).build();
-        this.setBo(bo);
         redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
         return bo;
-    }
-
-    private void setBo(Rule bo) {
-        bo.setStoreDao(storeDao);
     }
 
     private RulePo getPo(Rule bo) {
@@ -74,7 +68,6 @@ public class RuleDao {
 
         if (redisUtil.hasKey(key)) {
             Rule bo = (Rule) redisUtil.get(key);
-            this.setBo(bo);
             return bo;
         }
 
@@ -131,12 +124,10 @@ public class RuleDao {
         return getBo(po, Optional.empty());
     }
 
-    public Long insert(Rule rule, UserDto user) throws RuntimeException {
+    public Long insert(Rule rule) throws RuntimeException {
         RulePo po = this.rulePoMapper.findByTypeAndStoreId(rule.getType(), rule.getStoreId());
         if (null == po) {
             RulePo rulePo = getPo(rule);
-            putUserFields(rulePo, "creator", user);
-            putGmtFields(rulePo, "create");
             this.rulePoMapper.save(rulePo);
             return rulePo.getId();
         } else {
@@ -144,13 +135,9 @@ public class RuleDao {
         }
     }
 
-    public String save(Long ruleId, Rule rule, UserDto user) {
+    public String save(Long ruleId, Rule rule) {
         RulePo po = getPo(rule);
         po.setId(ruleId);
-        if (null != user) {
-            putUserFields(po, "modifier", user);
-            putGmtFields(po, "modified");
-        }
         this.rulePoMapper.save(po);
         return String.format(KEY, rule.getId());
     }

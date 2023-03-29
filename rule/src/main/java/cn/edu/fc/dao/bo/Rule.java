@@ -1,6 +1,6 @@
 package cn.edu.fc.dao.bo;
 
-import cn.edu.fc.dao.openfeign.StoreDao;
+import cn.edu.fc.dao.StoreDao;
 import cn.edu.fc.javaee.core.model.bo.SSObject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -230,7 +230,7 @@ public class Rule extends SSObject implements Serializable {
         }
 
         if (null == this.store && null != this.storeDao) {
-            this.store = this.storeDao.getStoreById(this.storeId).getData();
+            this.store = this.storeDao.findById(this.storeId);
         }
 
         return this.store;

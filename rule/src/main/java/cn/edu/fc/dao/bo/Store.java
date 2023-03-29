@@ -1,21 +1,28 @@
 package cn.edu.fc.dao.bo;
 
 import cn.edu.fc.javaee.core.model.bo.SSObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
+@ToString(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Store extends SSObject {
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
+    @Setter
     private String address;
 
+    @Getter
+    @Setter
     private Float size;
 
     @Builder

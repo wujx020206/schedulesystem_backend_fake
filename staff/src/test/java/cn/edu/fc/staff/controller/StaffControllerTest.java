@@ -1,4 +1,4 @@
-package cn.edu.fc.store.controller;
+package cn.edu.fc.staff.controller;
 
 import cn.edu.fc.StaffApplication;
 import cn.edu.fc.javaee.core.util.JwtHelper;

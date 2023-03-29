@@ -52,9 +52,8 @@ public class AdminRuleController {
     @PutMapping("/{storeId}/{type}/rule")
     public ReturnObject updateStoreRuleByType(@PathVariable Long storeId,
                                               @PathVariable String type,
-                                              @Valid @RequestBody RuleVo vo,
-                                              @LoginUser UserDto user) {
-        this.ruleService.updateRule(type, storeId, vo.getValue(), user);
+                                              @Valid @RequestBody RuleVo vo) {
+        this.ruleService.updateRule(type, storeId, vo.getValue());
         return new ReturnObject(ReturnNo.OK);
     }
 }

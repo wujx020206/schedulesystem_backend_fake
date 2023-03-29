@@ -1,6 +1,7 @@
 package cn.edu.fc.service;
 
 import cn.edu.fc.dao.RuleDao;
+import cn.edu.fc.dao.StoreDao;
 import cn.edu.fc.dao.bo.Rule;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.ReturnNo;
@@ -24,16 +25,19 @@ public class RuleService {
 
     private final RuleDao ruleDao;
 
+    private final StoreDao storeDao;
+
     @Autowired
-    public RuleService(RuleDao ruleDao) {
+    public RuleService(RuleDao ruleDao, StoreDao storeDao) {
         this.ruleDao = ruleDao;
+        this.storeDao = storeDao;
     }
 
     public PageDto<RuleDto> retrieveRules(Integer page, Integer pageSize) {
         List<Rule> preferences = this.ruleDao.retrieveAll(page, pageSize);
         List<RuleDto> ret = preferences.stream().map(obj -> {
             String[] arr = obj.getType().split("_");
-            RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(obj.getValue()).shopName(obj.getStore().getName()).build();
+            RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(obj.getValue()).shopName(storeDao.findById(obj.getStoreId()).getName()).build();
             return dto;
         }).collect(Collectors.toList());
         return new PageDto<>(ret, page, pageSize);
@@ -65,14 +69,14 @@ public class RuleService {
         return dto;
     }
 
-    public void updateRule(String type, Long storeId, String value, UserDto user) {
+    public void updateRule(String type, Long storeId, String value) {
         Rule bo = this.ruleDao.findByTypeAndStoreId(type, storeId);
         if (null == bo) {
             Rule rule = Rule.builder().type(type).value(value).storeId(storeId).build();
-            this.ruleDao.insert(rule, user);
+            this.ruleDao.insert(rule);
         } else {
             Rule rule = Rule.builder().type(bo.getType()).value(value).storeId(bo.getStoreId()).build();
-            this.ruleDao.save(bo.getId(), rule, user);
+            this.ruleDao.save(bo.getId(), rule);
         }
     }
 
