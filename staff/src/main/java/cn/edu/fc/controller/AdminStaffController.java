@@ -97,7 +97,7 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/preferencesp/{type}/preferences")
+    @GetMapping("/preferences/{type}/preferences")
     public ReturnObject getPreferencesByType(@PathVariable Byte type,
                                              @RequestParam(required = false, defaultValue = "1") Integer page,
                                              @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
