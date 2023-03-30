@@ -15,4 +15,8 @@ public interface StaffDao {
     InternalReturnObject<PageDto<Staff>> retrieveAllStaffsByShopId(@PathVariable Long storeId);
     @GetMapping("/staff/positions")
     InternalReturnObject<List<String>> retrieveAllStaffPositions();
+    @GetMapping("/staff/skills")
+    InternalReturnObject<List<String>> retrieveAllStaffSkills();
+    @GetMapping("/staff/{staffId}/staff")
+    InternalReturnObject<Staff> findStaffById(@PathVariable Long staffId);
 }

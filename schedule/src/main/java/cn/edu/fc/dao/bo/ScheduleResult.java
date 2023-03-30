@@ -15,7 +15,7 @@ public class ScheduleResult {
         scheduleList = new ArrayList<>();
     }
     public ScheduleResult insertEmpty(LocalDateTime start, LocalDateTime end, int duration) {
-        scheduleList.add(new StaffSchedule(null, start, end, duration));
+        scheduleList.add(new StaffSchedule(start, end, duration));
         return this;
     }
     public Stream<StaffSchedule> stream() {
