@@ -8,6 +8,8 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class StaffDto {
+    private Long id;
+
     private String name;
 
     private String position;
