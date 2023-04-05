@@ -63,6 +63,14 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
+    @GetMapping("/{staffName}/staffId")
+    public ReturnObject findStaffIdByName(@PathVariable String staffName,
+                                          @RequestParam(required = false, defaultValue = "1") Integer page,
+                                          @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageDto<Long> ret = this.staffService.retrieveStaffIdByName(staffName, page, pageSize);
+        return new ReturnObject(ReturnNo.OK, ret);
+    }
+
     @PostMapping("/staff")
     public ReturnObject createStaff(@Valid @RequestBody StaffVo vo) {
         this.staffService.createStaff(vo.getName(), vo.getPosition(), vo.getPhone(), vo.getEmail(),vo.getStoreId());

@@ -65,6 +65,15 @@ public class StaffService {
         return new PageDto<>(ret, page, pageSize);
     }
 
+    public PageDto<Long> retrieveStaffIdByName(String name, Integer page, Integer pageSize) {
+        List<Staff> staffs = this.staffDao.retrieveByName(name, page, pageSize);
+        List<Long> ret = staffs.stream().map(obj -> {
+            Long id = obj.getId();
+            return id;
+        }).collect(Collectors.toList());
+        return new PageDto<>(ret, page, pageSize);
+    }
+
     public List<String> retrievePositions() {
         List<String> ret = new ArrayList();
         ret.add("STOREMANAGER");
