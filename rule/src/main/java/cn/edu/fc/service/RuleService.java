@@ -52,7 +52,7 @@ public class RuleService {
 
         List<RuleDto> ret = preferences.stream().map(obj -> {
             String[] arr = obj.getType().split("_");
-            RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(obj.getValue()).shopName(obj.getStore().getName()).build();
+            RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(obj.getValue()).shopName(storeDao.findById(obj.getStoreId()).getName()).build();
             return dto;
         }).collect(Collectors.toList());
         return new PageDto<>(ret, page, pageSize);
@@ -65,7 +65,7 @@ public class RuleService {
         }
 
         String[] arr = bo.getType().split("_");
-        RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(bo.getValue()).shopName(bo.getStore().getName()).build();
+        RuleDto dto = RuleDto.builder().firstType(arr[0]).secondType(arr[1]).value(bo.getValue()).shopName(storeDao.findById(storeId).getName()).build();
         return dto;
     }
 
@@ -75,8 +75,9 @@ public class RuleService {
             Rule rule = Rule.builder().type(type).value(value).storeId(storeId).build();
             this.ruleDao.insert(rule);
         } else {
-            Rule rule = Rule.builder().id(bo.getId()).type(bo.getType()).value(value).storeId(bo.getStoreId()).build();
-            this.ruleDao.save(bo.getId(), rule);
+            //Rule rule = Rule.builder().id(bo.getId()).type(bo.getType()).value(value).storeId(bo.getStoreId()).build();
+            bo.setValue(value);
+            this.ruleDao.save(bo.getId(), bo);
         }
     }
 

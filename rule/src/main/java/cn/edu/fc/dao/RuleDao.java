@@ -49,7 +49,7 @@ public class RuleDao {
     }
 
     private Rule getBo(RulePo po, Optional<String> redisKey) {
-        Rule bo = Rule.builder().type(po.getType()).value(po.getValue()).storeId(po.getStoreId()).build();
+        Rule bo = Rule.builder().id(po.getId()).type(po.getType()).value(po.getValue()).storeId(po.getStoreId()).build();
         redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
         return bo;
     }
