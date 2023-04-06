@@ -1,7 +1,6 @@
 package cn.edu.fc.dao;
 
 import cn.edu.fc.dao.bo.StaffSchedule;
-import cn.edu.fc.dao.openfeign.StaffDao;
 import cn.edu.fc.javaee.core.model.dto.UserDto;
 import cn.edu.fc.javaee.core.util.RedisUtil;
 import cn.edu.fc.mapper.StaffSchedulePoMapper;

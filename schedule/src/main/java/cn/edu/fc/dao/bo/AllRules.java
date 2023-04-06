@@ -1,12 +1,16 @@
 package cn.edu.fc.dao.bo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalTime;
 import java.util.List;
 
 @Data
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AllRules {
     private Integer weekDayOpenRule;
