@@ -48,7 +48,7 @@ public class StaffDao {
     }
 
     private Staff getBo(StaffPo po, Optional<String> redisKey) {
-        Staff bo = Staff.builder().name(po.getName()).position(po.getPosition()).phone(po.getPhone())
+        Staff bo = Staff.builder().id(po.getId()).name(po.getName()).position(po.getPosition()).phone(po.getPhone())
                 .email(po.getEmail()).storeId(po.getStoreId()).build();
         this.setBo(bo);
         redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
