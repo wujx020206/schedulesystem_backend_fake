@@ -55,7 +55,7 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/{staffName}/staff")
+    @GetMapping("/name/{staffName}/staff")
     public ReturnObject findStaffByName(@PathVariable String staffName,
                                         @RequestParam(required = false, defaultValue = "1") Integer page,
                                         @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
@@ -63,7 +63,7 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/{staffName}/staffId")
+    @GetMapping("/name/{staffName}/staffId")
     public ReturnObject findStaffIdByName(@PathVariable String staffName,
                                           @RequestParam(required = false, defaultValue = "1") Integer page,
                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {

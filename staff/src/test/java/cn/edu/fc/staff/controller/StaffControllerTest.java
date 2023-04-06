@@ -33,6 +33,8 @@ public class StaffControllerTest {
 
     private static final String RETRIEVE_STAFFS = "/staff/staffs";
 
+    private static final String RETRIEVE_ID = "/staff/name/{staffName}/staffId";
+
     private static final String CREATE_STAFF = "/staff/staff";
 
     private static final String UPDATE_STAFF = "/staff/{storeId}/staff";
@@ -59,6 +61,24 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("wujiaxi")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrieveStaffId() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_ID, "wujiaxi")
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("page", "1")
+                        .param("pageSize", "10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0]", is(1)))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
