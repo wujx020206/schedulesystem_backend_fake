@@ -122,6 +122,7 @@ public class PreferenceDao {
     }
 
     public void delete(Byte type,Long id) {
-        this.preferencePoMapper.deleteByTypeAndStaffId(type, id);
+        PreferencePo po = this.preferencePoMapper.findByTypeAndStaffId(type, id);
+        this.preferencePoMapper.delete(po);
     }
 }

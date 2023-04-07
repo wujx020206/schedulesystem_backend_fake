@@ -41,6 +41,8 @@ public class StaffControllerTest {
 
     private static final String DELETE_STAFF = "/staff/{staffId}/staff";
 
+    private static final String RETRIEVE_PREFERENCE = "/staff/preferences";
+
     @BeforeAll
     public static void setup(){
         JwtHelper jwtHelper = new JwtHelper();
@@ -134,6 +136,24 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrievePreferences() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_PREFERENCE)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("page", "1")
+                        .param("pageSize", "10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("8")))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }

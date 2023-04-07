@@ -13,6 +13,4 @@ public interface PreferencePoMapper extends JpaRepository<PreferencePo, Long> {
     Page<PreferencePo> findByType(Byte type, Pageable pageable);
 
     PreferencePo findByTypeAndStaffId(Byte type, Long staffId);
-
-    void deleteByTypeAndStaffId(Byte type, Long staffId);
 }
