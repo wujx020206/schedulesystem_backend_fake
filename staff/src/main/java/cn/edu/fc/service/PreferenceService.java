@@ -34,6 +34,7 @@ public class PreferenceService {
     public PageDto<PreferenceDto> retrievePreferences(Integer page, Integer pageSize) {
         List<Preference> preferences = this.preferenceDao.retrieveAll(page, pageSize);
         List<PreferenceDto> ret = preferences.stream().map(obj -> {
+            obj.setStaffDao(staffDao);
             PreferenceDto dto = PreferenceDto.builder().type(obj.getType()).staffName(obj.getStaff().getName()).value(obj.getValue()).build();
             return dto;
         }).collect(Collectors.toList());
@@ -43,6 +44,7 @@ public class PreferenceService {
     public PageDto<PreferenceDto> retrievePreferencesByStaffId(Long staffId, Integer page, Integer pageSize) {
         List<Preference> preferences = this.preferenceDao.retrieveByStaffId(staffId, page, pageSize);
         List<PreferenceDto> ret = preferences.stream().map(obj -> {
+            obj.setStaffDao(staffDao);
             PreferenceDto dto = PreferenceDto.builder().type(obj.getType()).staffName(obj.getStaff().getName()).value(obj.getValue()).build();
             return dto;
         }).collect(Collectors.toList());
@@ -52,6 +54,7 @@ public class PreferenceService {
     public PageDto<PreferenceDto> retrievePreferencesByType(Byte type, Integer page, Integer pageSize) {
         List<Preference> preferences = this.preferenceDao.retrieveByType(type, page, pageSize);
         List<PreferenceDto> ret = preferences.stream().map(obj -> {
+            obj.setStaffDao(staffDao);
             PreferenceDto dto = PreferenceDto.builder().type(obj.getType()).staffName(obj.getStaff().getName()).value(obj.getValue()).build();
             return dto;
         }).collect(Collectors.toList());
@@ -60,6 +63,7 @@ public class PreferenceService {
 
     public PreferenceDto retrievePreferencesByTypeAndStaffId(Byte type, Long staffId) {
         Preference preference = this.preferenceDao.findByTypeAndStaffId(type, staffId);
+        preference.setStaffDao(staffDao);
         PreferenceDto dto = PreferenceDto.builder().type(preference.getType()).staffName(preference.getStaff().getName()).value(preference.getValue()).build();
         return dto;
     }
