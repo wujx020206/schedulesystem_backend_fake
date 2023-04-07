@@ -1,5 +1,6 @@
 package cn.edu.fc.service;
 
+import cn.edu.fc.dao.PreferenceDao;
 import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.dao.StoreDao;
 import cn.edu.fc.dao.bo.Store;
@@ -24,11 +25,14 @@ public class StaffService {
 
     private final StaffDao staffDao;
 
+    private final PreferenceDao preferenceDao;
+
     private final StoreDao storeDao;
 
     @Autowired
-    public StaffService(StaffDao staffDao, StoreDao storeDao) {
+    public StaffService(StaffDao staffDao, PreferenceDao preferenceDao, StoreDao storeDao) {
         this.staffDao = staffDao;
+        this.preferenceDao = preferenceDao;
         this.storeDao = storeDao;
     }
 
@@ -122,6 +126,10 @@ public class StaffService {
         if (null == staff) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staffId));
         }
+
+        this.preferenceDao.delete((byte) 0, staffId);
+        this.preferenceDao.delete((byte) 1, staffId);
+        this.preferenceDao.delete((byte) 2, staffId);
 
         this.staffDao.delete(staffId);
     }
