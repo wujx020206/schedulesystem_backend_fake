@@ -109,6 +109,15 @@ public class PreferenceDao {
         return getBo(preferencePo, Optional.empty());
     }
 
+    public Long findIdyTypeAndStaffId(Byte type, Long staffId) {
+        PreferencePo preferencePo = this.preferencePoMapper.findByTypeAndStaffId(type, staffId);
+        if (null == preferencePo) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", staffId));
+        }
+
+        return preferencePo.getId();
+    }
+
     public void insert(Preference preference) throws RuntimeException {
         PreferencePo po = this.preferencePoMapper.findByTypeAndStaffId(preference.getType(), preference.getStaffId());
 

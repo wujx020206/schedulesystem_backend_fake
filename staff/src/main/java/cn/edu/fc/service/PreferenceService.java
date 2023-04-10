@@ -68,6 +68,10 @@ public class PreferenceService {
         return dto;
     }
 
+    public Long findPreferenceIdByTypeAndStaffId(Byte type, Long staffId) {
+        return this.preferenceDao.findIdyTypeAndStaffId(type, staffId);
+    }
+
     public void createPreference(Long staffId, Byte type, String value) {
         Staff staff = this.staffDao.findById(staffId);
         if (null == staff) {

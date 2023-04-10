@@ -120,6 +120,13 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
+    @GetMapping("/{staffId}/preferences/{type}/preference/id")
+    public ReturnObject getPreferenceIdByTypeAndStaffId(@PathVariable Byte type,
+                                                        @PathVariable Long staffId) {
+        Long ret = this.preferenceService.findPreferenceIdByTypeAndStaffId(type, staffId);
+        return new ReturnObject(ReturnNo.OK, ret);
+    }
+
     @PostMapping("/{staffId}/preference")
     public ReturnObject createStaffPreference(@PathVariable Long staffId,
                                               @Valid @RequestBody CreatePreferenceVo vo) {
