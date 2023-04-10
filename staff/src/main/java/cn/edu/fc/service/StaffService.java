@@ -3,6 +3,7 @@ package cn.edu.fc.service;
 import cn.edu.fc.dao.PreferenceDao;
 import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.dao.StoreDao;
+import cn.edu.fc.dao.bo.Preference;
 import cn.edu.fc.dao.bo.Store;
 import cn.edu.fc.dao.bo.Staff;
 import cn.edu.fc.javaee.core.exception.BusinessException;
@@ -104,7 +105,16 @@ public class StaffService {
         }
 
         Staff staff = Staff.builder().name(name).position(position).phone(phone).email(email).storeId(shopId).build();
-        this.staffDao.insert(staff);
+        Long staffId = this.staffDao.insert(staff);
+
+        Preference pre1 = Preference.builder().type((byte) 0).staffId(staffId).value(null).build();
+        this.preferenceDao.insert(pre1);
+
+        Preference pre2 = Preference.builder().type((byte) 1).staffId(staffId).value(null).build();
+        this.preferenceDao.insert(pre2);
+
+        Preference pre3 = Preference.builder().type((byte) 2).staffId(staffId).value(null).build();
+        this.preferenceDao.insert(pre3);
     }
 
     public void updateStaff(Long staffId, String name, String position, String phone, String email, Long storeId) {
