@@ -20,32 +20,32 @@ public class Staff extends SSObject implements Serializable {
     /**
      * 门店经理
      */
-    public static final Byte STOREMANAGER = 0;
+    public static final String STOREMANAGER = "门店经理";
 
     /**
      * 副经理
      */
-    public static final Byte ASSISTANTMANAGER = 1;
+    public static final String ASSISTANTMANAGER = "副经理";
 
     /**
      * 小组长
      */
-    public static final Byte TEAMLEADER = 2;
+    public static final String TEAMLEADER = "小组长";
 
     /**
      * 店员（收银）
      */
-    public static final Byte CASHIER = 3;
+    public static final String CASHIER = "店员（收银）";
 
     /**
      * 店员（导购）
      */
-    public static final Byte GUIDE = 4;
+    public static final String GUIDE = "店员（导购）";
 
     /**
      * 店员（库房）
      */
-    public static final Byte WAREHOUSE = 5;
+    public static final String WAREHOUSE = "店员（库房）";
 
     @ToString.Exclude
     @JsonIgnore

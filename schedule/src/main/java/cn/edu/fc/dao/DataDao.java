@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +96,7 @@ public class DataDao {
     }
 
     public List<Data> retrieveByStoreIdAndDateBetween(Long storeId, LocalDate beginDate, LocalDate endDate, Integer page, Integer pageSize) {
-        List<DataPo> retList = this.dataPoMapper.findByStoreIdAndDateBetween(storeId, String.valueOf(beginDate), String.valueOf(endDate), PageRequest.of(page, pageSize))
+        List<DataPo> retList = this.dataPoMapper.findByStoreIdAndDateBetween(storeId, beginDate, endDate, PageRequest.of(page, pageSize))
                 .stream().collect(Collectors.toList());
         if (null == retList || retList.size() == 0)
             return new ArrayList<>();
@@ -106,8 +107,8 @@ public class DataDao {
         return ret;
     }
 
-    public List<Data> retrieveByStoreIdAndDate(Long storeId, LocalDate date, Integer page, Integer pageSize) {
-        List<DataPo> retList = this.dataPoMapper.findByStoreIdAndDate(storeId, String.valueOf(date), PageRequest.of(0, MAX_RETURN))
+    public List<Data> retrieveByStoreIdAndDate(Long storeId, LocalDate date) {
+        List<DataPo> retList = this.dataPoMapper.findByStoreIdAndDate(storeId, date, PageRequest.of(0, MAX_RETURN))
                 .stream().collect(Collectors.toList());
         if (null == retList || retList.size() == 0)
             return new ArrayList<>();
@@ -118,8 +119,8 @@ public class DataDao {
         return ret;
     }
 
-    public Data findByStoreIdAndDateAndBeginTimeAndEndTime(Long storeId, LocalDate date, String beginTime, String endTime) {
-        DataPo po = this.dataPoMapper.findByStoreIdAndDateAndBeginTimeAndEndTime(storeId, String.valueOf(date), beginTime, endTime);
+    public Data findByStoreIdAndDateAndBeginTimeAndEndTime(Long storeId, LocalDate date, LocalTime beginTime, LocalTime endTime) {
+        DataPo po = this.dataPoMapper.findByStoreIdAndDateAndBeginTimeAndEndTime(storeId, date, beginTime, endTime);
         if (null == po) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "预测数据", storeId));
         }

@@ -3,6 +3,7 @@ package cn.edu.fc.service;
 import cn.edu.fc.dao.DataDao;
 import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.dao.StaffScheduleDao;
+import cn.edu.fc.dao.StoreDao;
 import cn.edu.fc.dao.bo.*;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.InternalReturnObject;
@@ -29,42 +30,49 @@ public class ScheduleService {
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
     private DataDao dataDao;
+
     private RuleDao ruleDao;
+
+    private StoreDao storeDao;
+
     private StaffDao staffDao;
+
     private StaffScheduleDao staffScheduleDao;
+
     private Scheduler scheduler;
 
     @Autowired
-    public ScheduleService(DataDao dataDao, RuleDao ruleDao, StaffDao staffDao, StaffScheduleDao staffScheduleDao, Scheduler scheduler) {
+    public ScheduleService(DataDao dataDao, RuleDao ruleDao, StoreDao storeDao, StaffDao staffDao, StaffScheduleDao staffScheduleDao, Scheduler scheduler) {
         this.dataDao = dataDao;
         this.ruleDao = ruleDao;
+        this.storeDao = storeDao;
         this.staffDao = staffDao;
         this.staffScheduleDao = staffScheduleDao;
         this.scheduler = scheduler;
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByDay(Long storeId, LocalDate date, UserDto user) {
-        List<StaffSchedule> ret = staffScheduleDao.retrieveByByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
+    public PageDto<StaffSchedule> retrieveScheduleByDay(Long storeId, LocalDate date) {
+        List<StaffSchedule> ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
         if (null == ret || ret.isEmpty()) {
             logger.info("No schedule found for day {}, generating...", date);
-            this.generateSchedule(storeId, date, user);
-            ret = staffScheduleDao.retrieveByByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
+            this.generateSchedule(storeId, date);
+            ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
         }
         return new PageDto<>(ret, 0, ret.size());
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByDayAndSkill(Long storeId, LocalDate date, String skill, UserDto user) {
+    public PageDto<StaffSchedule> retrieveScheduleByDayAndSkill(Long storeId, LocalDate date, String skill) {
         // TODO: implement
-        return this.retrieveScheduleByDay(storeId, date, user);
+        return this.retrieveScheduleByDay(storeId, date);
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByDayAndPosition(Long storeId, LocalDate date, String position, UserDto user) {
+    public PageDto<StaffSchedule> retrieveScheduleByDayAndPosition(Long storeId, LocalDate date, String position) {
         // TODO: implement
-        return this.retrieveScheduleByDay(storeId, date, user);
+        return this.retrieveScheduleByDay(storeId, date);
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByDayAndStaff(Long storeId, LocalDate date, Long staffId, UserDto user) {
-        List<StaffSchedule> ret = this.retrieveScheduleByDay(storeId, date, user)
+    public PageDto<StaffSchedule> retrieveScheduleByDayAndStaff(Long storeId, LocalDate date, Long staffId) {
+        List<StaffSchedule> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
                 .filter(schedule -> schedule.getStaffId().equals(staffId))
@@ -72,28 +80,28 @@ public class ScheduleService {
         return new PageDto<>(ret, 0, ret.size());
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByWeek(Long storeId, LocalDate date, UserDto user) {
-        List<StaffSchedule> ret = staffScheduleDao.retrieveByByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
+    public PageDto<StaffSchedule> retrieveScheduleByWeek(Long storeId, LocalDate date) {
+        List<StaffSchedule> ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
         if (null == ret || ret.isEmpty()) {
             logger.info("No schedule found for week begin at {}, generating...", date);
-            this.generateSchedule(storeId, date, user);
-            ret = staffScheduleDao.retrieveByByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
+            this.generateSchedule(storeId, date);
+            ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
         }
         return new PageDto<>(ret, 0, ret.size());
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByWeekAndSkill(Long storeId, LocalDate date, String skill, UserDto user) {
+    public PageDto<StaffSchedule> retrieveScheduleByWeekAndSkill(Long storeId, LocalDate date, String skill) {
         // TODO: implement
-        return this.retrieveScheduleByWeek(storeId, date, user);
+        return this.retrieveScheduleByWeek(storeId, date);
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByWeekAndPosition(Long storeId, LocalDate date, String position, UserDto user) {
+    public PageDto<StaffSchedule> retrieveScheduleByWeekAndPosition(Long storeId, LocalDate date, String position) {
         // TODO: implement
-        return this.retrieveScheduleByWeek(storeId, date, user);
+        return this.retrieveScheduleByWeek(storeId, date);
     }
 
-    public PageDto<StaffSchedule> retrieveScheduleByWeekAndStaff(Long storeId, LocalDate date, Long staffId, UserDto user) {
-        List<StaffSchedule> ret = this.retrieveScheduleByWeek(storeId, date, user)
+    public PageDto<StaffSchedule> retrieveScheduleByWeekAndStaff(Long storeId, LocalDate date, Long staffId) {
+        List<StaffSchedule> ret = this.retrieveScheduleByWeek(storeId, date)
                 .getList()
                 .stream()
                 .filter(schedule -> schedule.getStaffId().equals(staffId))
@@ -101,21 +109,20 @@ public class ScheduleService {
         return new PageDto<>(ret, 0, ret.size());
     }
 
-    private void generateSchedule(Long storeId, LocalDate date, UserDto user) {
-        List<Data> data = this.dataDao.retrieveByStoreIdAndDate(storeId, date, 0, MAX_RETURN);
+    private void generateSchedule(Long storeId, LocalDate date) {
+        List<Data> data = this.dataDao.retrieveByStoreIdAndDate(storeId, date);
         List<Staff> staffs = this.staffDao.retrieveByShopId(storeId, 0, MAX_RETURN);
         List<String> staffPositions = new ArrayList<>();
-        staffPositions.add("STOREMANAGER");
-        staffPositions.add("ASSISTANTMANAGER");
-        staffPositions.add("TEAMLEADER");
-        staffPositions.add("CASHIER");
-        staffPositions.add("GUIDE");
-        staffPositions.add("WAREHOUSE");
+        staffPositions.add("门店经理");
+        staffPositions.add("副经理");
+        staffPositions.add("小组长");
+        staffPositions.add("店员（收银）");
+        staffPositions.add("店员（导购）");
+        staffPositions.add("店员（库房）");
 
         List<Rule> rules = this.ruleDao.retrieveByStoreId(storeId);
-        Integer preparePeople = (int)Math.ceil(findRule(rules,"自定义规则_准备工作人数").getStore().getSize()/Long.parseLong(findRule(rules, "自定义规则_准备工作人数").getValue()));
-        Float workPeople = (float)Math.ceil(findRule(rules,"自定义规则_工作店员需求数").getStore().getSize()/Long.parseLong(findRule(rules, "自定义规则_工作店员需求数").getValue()));
-        Integer endPeople = (int)Math.ceil(findRule(rules,"自定义规则_收尾工作人数").getStore().getSize()/Long.parseLong(findRule(rules, "自定义规则_收尾工作人数").getValue().split(" ")[0]))+Integer.parseInt(findRule(rules, "自定义规则_收尾工作人数").getValue().split(" ")[1]);
+        Integer preparePeople = (int)Math.ceil(storeDao.findById(findRule(rules,"自定义规则_准备工作人数").getStoreId()).getSize()/Double.parseDouble(findRule(rules, "自定义规则_准备工作人数").getValue()));
+        Integer endPeople = (int)Math.ceil(storeDao.findById(findRule(rules,"自定义规则_收尾工作人数").getStoreId()).getSize()/Double.parseDouble(findRule(rules, "自定义规则_收尾工作人数").getValue().split(" ")[0]))+Integer.parseInt(findRule(rules, "自定义规则_收尾工作人数").getValue().split(" ")[1]);
 
         AllRules allRules = AllRules.builder().weekDayOpenRule(Integer.valueOf(findRule(rules, "固定规则_工作日开店规则").getValue()))
                 .weekDayCloseRule(Integer.valueOf(findRule(rules, "固定规则_工作日关店规则").getValue()))
@@ -124,6 +131,7 @@ public class ScheduleService {
                 .maxHourPerWeek(Integer.valueOf(findRule(rules, "固定规则_员工每周工作时长").getValue()))
                 .maxHourPerDay(Integer.valueOf(findRule(rules, "固定规则_员工每天工作时长").getValue()))
                 .leastHourPerPeriod(Integer.valueOf(findRule(rules, "固定规则_单班次最短时长").getValue()))
+                .maxContinuousWorkTime(Integer.valueOf(findRule(rules, "固定规则_员工最长连续工作时长").getValue()))
                 .maxHourPerPeriod(Integer.valueOf(findRule(rules, "固定规则_单班次最长时长").getValue()))
                 .lunchBegin(Integer.valueOf(findRule(rules, "固定规则_午餐开始时间").getValue()))
                 .lunchEnd(Integer.valueOf(findRule(rules, "固定规则_午餐结束时间").getValue()))
@@ -133,21 +141,21 @@ public class ScheduleService {
                 .prepareTime(Integer.valueOf(findRule(rules, "自定义规则_准备工作时长").getValue()))
                 .preparePeople(preparePeople)
                 .prepareStation(Arrays.asList(findRule(rules,"自定义规则_准备工作职位").getValue().split(" ")))
-                .workPeople(workPeople)
+                .workPeople(Float.valueOf(findRule(rules, "自定义规则_工作店员需求数").getValue()))
                 .workStation(Arrays.asList(findRule(rules,"自定义规则_工作职位").getValue().split(" ")))
                 .leastPeople(Integer.valueOf(findRule(rules, "自定义规则_无客流量店员数").getValue()))
-                //.endHour(Long.valueOf(findRule(rules, "自定义规则_收尾工作时长").getValue()))
+                .endTime(Integer.valueOf(findRule(rules, "自定义规则_收尾工作时长").getValue()))
                 .endPeople(endPeople)
                 .endStation(Arrays.asList(findRule(rules,"自定义规则_收尾工作职位").getValue().split(" ")))
                 .build();
 
         ScheduleResult result = scheduler.schedule(data, staffs, staffPositions, date, allRules);
-        result.stream().forEach(schedule -> staffScheduleDao.insert(schedule, user));
+        result.stream().forEach(schedule -> staffScheduleDao.insert(schedule));
     }
 
     public Rule findRule(List<Rule> rules, String type) {
         for (Rule rule : rules) {
-            if (type == rule.getType()) {
+            if (type.equals(rule.getType())) {
                 return rule;
             }
         }

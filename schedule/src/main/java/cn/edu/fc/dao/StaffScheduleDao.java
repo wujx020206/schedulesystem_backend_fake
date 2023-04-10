@@ -56,16 +56,14 @@ public class StaffScheduleDao {
         return StaffSchedulePo.builder().id(bo.getId()).staffId(bo.getStaffId()).start(bo.getStart()).end(bo.getEnd()).build();
     }
 
-    public List<StaffSchedule> retrieveByByStartGreaterThanEqualAndEndLessThanEqual(LocalDateTime start, LocalDateTime end, Integer page, Integer size) {
+    public List<StaffSchedule> retrieveByStartGreaterThanEqualAndEndLessThanEqual(LocalDateTime start, LocalDateTime end, Integer page, Integer size) {
         return this.staffSchedulePoMapper.findAllByStartGreaterThanEqualAndEndLessThanEqual(start, end, PageRequest.of(page, size)).stream()
                 .map(po -> this.getBo(po, Optional.of(String.format(KEY, po.getId()))))
                 .collect(Collectors.toList());
     }
 
-    public Long insert(StaffSchedule staffSchedule, UserDto user) {
+    public Long insert(StaffSchedule staffSchedule) {
         StaffSchedulePo po = this.getPo(staffSchedule);
-        putUserFields(po, "creator", user);
-        putGmtFields(po, "create");
         this.staffSchedulePoMapper.save(po);
         return po.getId();
     }
