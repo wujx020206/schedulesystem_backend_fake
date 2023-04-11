@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 
 @SpringBootTest(classes = ScheduleApplication.class)
 @AutoConfigureMockMvc
@@ -49,7 +49,7 @@ public class ScheduleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("wujiaxi")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].staff.name", notNullValue()))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }

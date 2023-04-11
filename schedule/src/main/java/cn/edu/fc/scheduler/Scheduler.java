@@ -1,5 +1,6 @@
 package cn.edu.fc.scheduler;
 
+import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.dao.bo.*;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.ReturnNo;
@@ -7,6 +8,7 @@ import cn.edu.fc.service.ScheduleService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,6 +25,9 @@ public class Scheduler {
     enum WorkTimeType {
         PREPARE, WORK, END
     }
+
+    @Autowired
+    private StaffDao staffDao;
 
     public Scheduler() {
         random = new Random();
@@ -51,6 +56,8 @@ public class Scheduler {
                 return;
 //                throw new BusinessException(ReturnNo.NO_ENOUGH_STAFF, ReturnNo.NO_ENOUGH_STAFF.getMessage());
             schedule.setStaff(staff.getStaff());
+            schedule.setStaffId(staff.getStaff().getId());
+            schedule.setStaffDao(staffDao);
             if (staff.getLastWorkedHourStart() == null || schedule.getStart().getDayOfMonth() != staff.getLastWorkedHourStart().getDayOfMonth())
                 staff.setDayWorkedTime(0);
             staff.setDayWorkedTime(staff.getDayWorkedTime() + schedule.getDuration());

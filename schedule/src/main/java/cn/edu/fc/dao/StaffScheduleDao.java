@@ -42,7 +42,7 @@ public class StaffScheduleDao {
     }
 
     private StaffSchedule getBo(StaffSchedulePo po, Optional<String> redisKey) {
-        StaffSchedule bo = StaffSchedule.builder().start(po.getStart()).end(po.getEnd()).build();
+        StaffSchedule bo = StaffSchedule.builder().staffId(po.getStaffId()).start(po.getStart()).end(po.getEnd()).build();
         this.setBo(bo);
         redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
         return bo;
