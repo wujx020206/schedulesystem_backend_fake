@@ -34,11 +34,14 @@ public class StaffScheduleDao {
     private RedisUtil redisUtil;
     private StaffDao staffDao;
 
+    private PreferenceDao preferenceDao;
+
     @Autowired
-    public StaffScheduleDao(StaffSchedulePoMapper staffSchedulePoMapper, RedisUtil redisUtil, StaffDao staffDao) {
+    public StaffScheduleDao(StaffSchedulePoMapper staffSchedulePoMapper, RedisUtil redisUtil, StaffDao staffDao, PreferenceDao preferenceDao) {
         this.staffSchedulePoMapper = staffSchedulePoMapper;
         this.redisUtil = redisUtil;
         this.staffDao = staffDao;
+        this.preferenceDao = preferenceDao;
     }
 
     private StaffSchedule getBo(StaffSchedulePo po, Optional<String> redisKey) {
@@ -50,6 +53,7 @@ public class StaffScheduleDao {
 
     private void setBo(StaffSchedule bo) {
         bo.setStaffDao(staffDao);
+        bo.setPreferenceDao(preferenceDao);
     }
 
     private StaffSchedulePo getPo(StaffSchedule bo) {

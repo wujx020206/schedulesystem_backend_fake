@@ -1,5 +1,6 @@
 package cn.edu.fc.dao.bo;
 
+import cn.edu.fc.dao.PreferenceDao;
 import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.InternalReturnObject;
@@ -23,6 +24,10 @@ public class StaffSchedule extends SSObject implements Serializable {
     @Setter
     @ToString.Exclude
     private StaffDao staffDao;
+
+    @Setter
+    private PreferenceDao preferenceDao;
+
     @Setter
     private Staff staff;
     @Getter
@@ -57,6 +62,7 @@ public class StaffSchedule extends SSObject implements Serializable {
         if (staffDao == null || staffId == null)
             throw new BusinessException(ReturnNo.PARAMETER_MISSED, ReturnNo.PARAMETER_MISSED.getMessage());
         Staff staff = staffDao.findById(staffId);
+        staff.setPreferenceDao(preferenceDao);
         return staff;
     }
 }
