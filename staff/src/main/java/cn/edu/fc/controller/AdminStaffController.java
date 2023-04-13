@@ -134,7 +134,7 @@ public class AdminStaffController {
         return new ReturnObject(ReturnNo.CREATED);
     }
 
-    @PutMapping("/{staffId}/preferences/{preferenceId}/preference")
+    @PutMapping("/{staffId}/preferences/{preferenceId}/preference/{type}")
     public ReturnObject updateStaffPreference(@PathVariable Long staffId,
                                               @PathVariable Byte type,
                                               @Valid @RequestBody UpdatePreferenceVo vo) {
