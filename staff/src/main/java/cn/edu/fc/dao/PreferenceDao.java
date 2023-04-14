@@ -60,7 +60,7 @@ public class PreferenceDao {
     }
 
     private PreferencePo getPo(Preference bo) {
-        PreferencePo po = PreferencePo.builder().type(bo.getType()).staffId(bo.getStaffId()).value(bo.getValue()).build();
+        PreferencePo po = PreferencePo.builder().id(bo.getId()).type(bo.getType()).staffId(bo.getStaffId()).value(bo.getValue()).build();
         return po;
     }
 
