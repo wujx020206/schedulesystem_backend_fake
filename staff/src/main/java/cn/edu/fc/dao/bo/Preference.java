@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Preference implements Serializable {
+public class Preference extends SSObject implements Serializable {
     /**
      * 工作日偏好
      */
@@ -62,7 +62,9 @@ public class Preference implements Serializable {
     }
 
     @Builder
-    public Preference(Byte type, Long staffId, String value) {
+    public Preference(Long id, Long creatorId, Long modifierId, String modifierName, String creatorName, LocalDateTime gmtCreate, LocalDateTime gmtModified,
+                      Byte type, Long staffId, String value) {
+        super(id, creatorId, creatorName, modifierId, modifierName, gmtCreate, gmtModified);
         this.type = type;
         this.staffId = staffId;
         this.value = value;

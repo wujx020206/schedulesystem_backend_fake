@@ -49,7 +49,7 @@ public class PreferenceDao {
     }
 
     private Preference getBo(PreferencePo po, Optional<String> redisKey) {
-        Preference bo = Preference.builder().type(po.getType()).staffId(po.getStaffId()).value(po.getValue()).build();
+        Preference bo = Preference.builder().id(po.getId()).type(po.getType()).staffId(po.getStaffId()).value(po.getValue()).build();
         this.setBo(bo);
         redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
         return bo;
