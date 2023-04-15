@@ -57,8 +57,9 @@ public class AdminScheduleController {
 
     @GetMapping("/week/{date}/week")
     public ReturnObject getScheduleByWeek(@PathVariable Long storeId,
-                                          @PathVariable LocalDate date) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeek(storeId, date));
+                                          @PathVariable String date) {
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeek(storeId, localDate));
     }
 
     @GetMapping("/week/{date}/skill/{skill}/week")
