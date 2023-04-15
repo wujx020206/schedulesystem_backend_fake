@@ -1,6 +1,6 @@
-package cn.edu.fc.dao.bo;
+package cn.edu.fc.dao;
 
-import cn.edu.fc.dao.StoreDao;
+import cn.edu.fc.dao.bo.Rule;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.ReturnNo;
 import cn.edu.fc.javaee.core.util.RedisUtil;
@@ -26,7 +26,7 @@ import static cn.edu.fc.javaee.core.model.Constants.MAX_RETURN;
 public class RuleDao {
     private final static Logger logger = LoggerFactory.getLogger(RuleDao.class);
 
-    private final static String KEY = "E%s";
+    private final static String KEY = "E%d";
 
     @Value("3600")
     private int timeout;

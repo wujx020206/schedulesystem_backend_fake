@@ -26,15 +26,18 @@ import static cn.edu.fc.javaee.core.util.Common.putUserFields;
 public class StaffScheduleDao {
     private static final Logger logger = LoggerFactory.getLogger(StaffScheduleDao.class);
 
-    private static final String KEY = "SS%d";
+    private static final String KEY = "S%d";
 
     @Value("3600")
     private int timeout;
-    private StaffSchedulePoMapper staffSchedulePoMapper;
-    private RedisUtil redisUtil;
-    private StaffDao staffDao;
 
-    private PreferenceDao preferenceDao;
+    private final StaffSchedulePoMapper staffSchedulePoMapper;
+
+    private final RedisUtil redisUtil;
+
+    private final StaffDao staffDao;
+
+    private final PreferenceDao preferenceDao;
 
     @Autowired
     public StaffScheduleDao(StaffSchedulePoMapper staffSchedulePoMapper, RedisUtil redisUtil, StaffDao staffDao, PreferenceDao preferenceDao) {
@@ -47,7 +50,7 @@ public class StaffScheduleDao {
     private StaffSchedule getBo(StaffSchedulePo po, Optional<String> redisKey) {
         StaffSchedule bo = StaffSchedule.builder().staffId(po.getStaffId()).start(po.getStart()).end(po.getEnd()).build();
         this.setBo(bo);
-        redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
+        //redisKey.ifPresent(key -> redisUtil.set(key, bo, timeout));
         return bo;
     }
 
@@ -62,7 +65,7 @@ public class StaffScheduleDao {
 
     public List<StaffSchedule> retrieveByStartGreaterThanEqualAndEndLessThanEqual(LocalDateTime start, LocalDateTime end, Integer page, Integer size) {
         return this.staffSchedulePoMapper.findAllByStartGreaterThanEqualAndEndLessThanEqual(start, end, PageRequest.of(page, size)).stream()
-                .map(po -> this.getBo(po, Optional.of(String.format(KEY, po.getId()))))
+                .map(po -> this.getBo(po,Optional.ofNullable(null)))
                 .collect(Collectors.toList());
     }
 

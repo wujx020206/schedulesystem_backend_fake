@@ -1,16 +1,13 @@
 package cn.edu.fc.service;
 
-import cn.edu.fc.dao.DataDao;
-import cn.edu.fc.dao.StaffDao;
-import cn.edu.fc.dao.StaffScheduleDao;
-import cn.edu.fc.dao.StoreDao;
+import cn.edu.fc.dao.*;
 import cn.edu.fc.dao.bo.*;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.InternalReturnObject;
 import cn.edu.fc.javaee.core.model.ReturnNo;
 import cn.edu.fc.javaee.core.model.dto.PageDto;
-import cn.edu.fc.javaee.core.model.dto.UserDto;
 import cn.edu.fc.scheduler.Scheduler;
+import cn.edu.fc.service.dto.StaffDto;
 import cn.edu.fc.service.dto.StaffScheduleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +28,17 @@ import static cn.edu.fc.javaee.core.model.Constants.MAX_RETURN;
 public class ScheduleService {
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
-    private DataDao dataDao;
+    private final DataDao dataDao;
 
-    private RuleDao ruleDao;
+    private final RuleDao ruleDao;
 
-    private StoreDao storeDao;
+    private final StoreDao storeDao;
 
-    private StaffDao staffDao;
+    private final StaffDao staffDao;
 
-    private StaffScheduleDao staffScheduleDao;
+    private final StaffScheduleDao staffScheduleDao;
 
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     @Autowired
     public ScheduleService(DataDao dataDao, RuleDao ruleDao, StoreDao storeDao, StaffDao staffDao, StaffScheduleDao staffScheduleDao, Scheduler scheduler) {
@@ -52,16 +50,24 @@ public class ScheduleService {
         this.scheduler = scheduler;
     }
 
-    private static StaffScheduleDto getDto(StaffSchedule bo) {
+    private StaffScheduleDto getDto(StaffSchedule bo) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        StaffDto staffDto = StaffDto.builder()
+                .id(bo.getStaffId() == null ? null : bo.getStaffId())
+                .name(bo.getStaffId() == null ? null : this.staffDao.findById(bo.getStaffId()).getName())
+                .position(bo.getStaffId() == null ? null : this.staffDao.findById(bo.getStaffId()).getPosition())
+                .build();
         return StaffScheduleDto.builder()
-                .staffId(bo.getStaffId() == null ? null : bo.getStaffId())
-                .staffName(bo.getStaffId() == null ? null : bo.getStaff().getName())
-                .staffPosition(bo.getStaffId() == null ? null : bo.getStaff().getPosition())
-                .startTime(bo.getStart())
-                .endTime(bo.getEnd())
+                .staff(staffDto)
+//                .staffId(bo.getStaffId() == null ? null : bo.getStaffId())
+//                .staffName(bo.getStaffId() == null ? null : bo.getStaff().getName())
+//                .staffPosition(bo.getStaffId() == null ? null : bo.getStaff().getPosition())
+                .startTime(df.format(bo.getStart()))
+                .endTime(df.format(bo.getEnd()))
                 .build();
     }
 
+    //@JsonIgnore
     public PageDto<StaffScheduleDto> retrieveScheduleByDay(Long storeId, LocalDate date) {
         List<StaffSchedule> ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
         if (null == ret || ret.isEmpty()) {
@@ -69,8 +75,8 @@ public class ScheduleService {
             this.generateSchedule(storeId, date);
             ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
         }
-        List<StaffScheduleDto> dtos = ret.stream().map(ScheduleService::getDto).collect(Collectors.toList());
-        return new PageDto<>(dtos, 0, dtos.size());
+        List<StaffScheduleDto> dtos = ret.stream().map(this::getDto).collect(Collectors.toList());
+        return new PageDto<>(dtos, 0, MAX_RETURN);
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByDayAndSkill(Long storeId, LocalDate date, String skill) {
@@ -107,7 +113,7 @@ public class ScheduleService {
             this.generateSchedule(storeId, date);
             ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
         }
-        List<StaffScheduleDto> dtos = ret.stream().map(ScheduleService::getDto).collect(Collectors.toList());
+        List<StaffScheduleDto> dtos = ret.stream().map(this::getDto).collect(Collectors.toList());
         return new PageDto<>(dtos, 0, dtos.size());
     }
 

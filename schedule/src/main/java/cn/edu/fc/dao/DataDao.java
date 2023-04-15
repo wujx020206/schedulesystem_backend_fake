@@ -28,7 +28,7 @@ import static cn.edu.fc.javaee.core.model.Constants.MAX_RETURN;
 public class DataDao {
     private final static Logger logger = LoggerFactory.getLogger(DataDao.class);
 
-    private final static String KEY = "E%s";
+    private final static String KEY = "E%d";
 
     @Value("3600")
     private int timeout;

@@ -87,9 +87,14 @@ public class Staff extends SSObject implements Serializable {
 
     private Store store;
 
+    @ToString.Exclude
+    @JsonIgnore
     @Setter
     private PreferenceDao preferenceDao;
     private List<Integer> workdayPreference;
+    @ToString.Exclude
+    @JsonIgnore
+    @Setter
     private Pair<Integer, Integer> workTimePreference;
 
     private Integer dayWorkLongPreference;

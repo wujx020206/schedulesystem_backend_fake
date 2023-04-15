@@ -2,6 +2,7 @@ package cn.edu.fc.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -9,19 +10,12 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Data
-@ToString
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Builder
 public class StaffScheduleDto {
     private StaffDto staff;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
-    @Builder
-    public StaffScheduleDto(Long staffId, String staffName, String staffPosition, LocalDateTime startTime, LocalDateTime endTime) {
-        staff = new StaffDto(staffId, staffName, staffPosition);
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
+    private String startTime;
+    private String endTime;
 }
 
