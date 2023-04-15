@@ -36,23 +36,26 @@ public class AdminScheduleController {
 
     @GetMapping("/day/{date}/skill/{skill}/day")
     public ReturnObject getScheduleByDayAndSkill(@PathVariable Long storeId,
-                                                 @PathVariable LocalDate date,
+                                                 @PathVariable String date,
                                                  @PathVariable String skill) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndSkill(storeId, date, skill));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndSkill(storeId, localDate, skill));
     }
 
     @GetMapping("/day/{date}/position/{position}/day")
     public ReturnObject getScheduleByDayAndPosition(@PathVariable Long storeId,
-                                                    @PathVariable LocalDate date,
+                                                    @PathVariable String date,
                                                     @PathVariable String position) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndPosition(storeId, date, position));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndPosition(storeId, localDate, position));
     }
 
     @GetMapping("/day/{date}/skill/{staffId}/day")
     public ReturnObject getScheduleByDayAndStaff(@PathVariable Long storeId,
-                                                 @PathVariable LocalDate date,
+                                                 @PathVariable String date,
                                                  @PathVariable Long staffId) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndStaff(storeId, date, staffId));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndStaff(storeId, localDate, staffId));
     }
 
     @GetMapping("/week/{date}/week")
@@ -64,23 +67,26 @@ public class AdminScheduleController {
 
     @GetMapping("/week/{date}/skill/{skill}/week")
     public ReturnObject getScheduleByWeekAndSkill(@PathVariable Long storeId,
-                                                  @PathVariable LocalDate date,
+                                                  @PathVariable String date,
                                                   @PathVariable String skill) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndSkill(storeId, date, skill));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndSkill(storeId, localDate, skill));
     }
 
     @GetMapping("/week/{date}/position/{position}/week")
     public ReturnObject getScheduleByWeekAndPosition(@PathVariable Long storeId,
-                                                     @PathVariable LocalDate date,
+                                                     @PathVariable String date,
                                                      @PathVariable String position) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndPosition(storeId, date, position));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndPosition(storeId, localDate, position));
     }
 
     @GetMapping("/week/{date}/staff/{staffId}/week")
     public ReturnObject getScheduleByWeekAndStaff(@PathVariable Long storeId,
-                                                  @PathVariable LocalDate date,
+                                                  @PathVariable String date,
                                                   @PathVariable Long staffId) {
-        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndStaff(storeId, date, staffId));
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByWeekAndStaff(storeId, localDate, staffId));
     }
     //        LocalTime localTime = LocalTime.parse(date, DateTimeFormatter.ofPattern("HH:mm:ss"));
 }
