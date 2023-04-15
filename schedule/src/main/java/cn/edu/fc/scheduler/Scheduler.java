@@ -18,11 +18,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class Scheduler {
     private static final Logger logger = LoggerFactory.getLogger(Scheduler.class);
-    private final static int MAX_RANDOM_TIMES = 5;
+    private final static int MAX_RANDOM_TIMES = 10;
     private final Random random;
     enum WorkTimeType {
         PREPARE, WORK, END
@@ -77,6 +78,8 @@ public class Scheduler {
     }
     private StaffScheduleInternal getStaffWithWorkTimeType(HashMap<String, Queue<StaffScheduleInternal>> allStaffs, WorkTimeType type, StaffSchedule emptySchedule, AllRules rules) {
         Function<StaffScheduleInternal, Boolean> validate = schedule -> {
+            if (schedule.getLastWorkedHourStart() == null || schedule.getLastWorkedHourStart().getDayOfWeek() != emptySchedule.getStart().getDayOfWeek())
+                schedule.setDayWorkedTime(0);
             if (schedule.getDayWorkedTime() + emptySchedule.getDuration() > rules.getMaxHourPerDay() * 2)
                 return false;   // 超出本日工作时间上限
             if (schedule.getDayWorkedTime() + emptySchedule.getDuration() > schedule.getStaff().getDayWorkLongPreference() * 2)
@@ -85,17 +88,17 @@ public class Scheduler {
                 return false;   // 超出本周工作时间上限
             if (schedule.getWeekWorkedTime() + emptySchedule.getDuration() > schedule.getStaff().getWeekWorkLongPreference() * 2)
                 return false;   // 超出员工偏好本周工作时间上限
-            if (schedule.getLastWorkedHourEnd() == null)
-                return true;    // 无上次工作时间
-            if (schedule.getStaff().getWorkdayPreference() != null && !schedule.getStaff().getWorkdayPreference().contains(emptySchedule.getStart().getDayOfWeek().getValue()))
+            if (schedule.getStaff().getWorkdayPreference() != null && !schedule.getStaff().getWorkdayPreference().isEmpty() && !schedule.getStaff().getWorkdayPreference().contains(emptySchedule.getStart().getDayOfWeek().getValue()))
                 return false;   // 不符合员工偏好工作日
             Pair<Integer, Integer> workTimePreference = schedule.getStaff().getWorkTimePreference();
-            if (workTimePreference != null && emptySchedule.getStart().getHour() < workTimePreference.getFirst() || workTimePreference.getSecond() < emptySchedule.getEnd().getHour())
+            if (workTimePreference != null && (emptySchedule.getStart().getHour() < workTimePreference.getFirst() || workTimePreference.getSecond() <= emptySchedule.getEnd().getHour()))
                 return false;   // 不符合员工偏好工作时间
-            return schedule.getLastWorkedHourEnd()
+            if (schedule.getLastWorkedHourEnd() == null)
+                return true;    // 无上次工作时间
+            return !schedule.getLastWorkedHourEnd()
                     .plusHours(rules.getBreakTime().getHour())
                     .plusMinutes(rules.getBreakTime().getMinute())
-                    .isBefore(emptySchedule.getStart());    // TODO: after of before?
+                    .isAfter(emptySchedule.getStart());    // TODO: after of before?
         };
         if (type == WorkTimeType.PREPARE)
             return this.getStaffWithPositions(rules.getPrepareStation(), allStaffs, validate);
@@ -148,6 +151,7 @@ public class Scheduler {
             schedule.setDuration(rules.getLeastHourPerPeriod() * 2);
             schedule.setStart(schedule.getEnd().minusHours(rules.getLeastHourPerPeriod()));
         });
+        scheduleResult.sort();
         return scheduleResult;
     }
     private Optional<Integer> getLastNeedStaff(List<Integer> needStaffs, Function<Integer, Boolean> validate) {
