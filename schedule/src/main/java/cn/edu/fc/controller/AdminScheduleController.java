@@ -100,7 +100,8 @@ public class AdminScheduleController {
     }
 
     @GetMapping("/id/{staffId}/{start}/{end}/period")
-    public ReturnObject getIdByStaffIdAndStartAndEnd(@PathVariable Long staffId,
+    public ReturnObject getIdByStaffIdAndStartAndEnd(@PathVariable Long storeId,
+                                                     @PathVariable Long staffId,
                                                      @PathVariable String start,
                                                      @PathVariable String end) {
         LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
