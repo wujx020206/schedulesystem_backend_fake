@@ -92,9 +92,9 @@ public class AdminScheduleController {
     }
 
     @PutMapping("/{id}/{name}/period")
-    public ReturnObject updateStoreRuleByType(@PathVariable Long storeId,
-                                              @PathVariable Long id,
-                                              @PathVariable String name) {
+    public ReturnObject updateStaffScheduleById(@PathVariable Long storeId,
+                                                @PathVariable Long id,
+                                                @PathVariable String name) {
         this.scheduleService.updateStaffSchedule(storeId, id, name);
         return new ReturnObject(ReturnNo.OK);
     }
