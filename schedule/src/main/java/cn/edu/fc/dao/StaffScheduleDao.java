@@ -1,9 +1,13 @@
 package cn.edu.fc.dao;
 
+import cn.edu.fc.dao.bo.Rule;
 import cn.edu.fc.dao.bo.StaffSchedule;
+import cn.edu.fc.javaee.core.exception.BusinessException;
+import cn.edu.fc.javaee.core.model.ReturnNo;
 import cn.edu.fc.javaee.core.model.dto.UserDto;
 import cn.edu.fc.javaee.core.util.RedisUtil;
 import cn.edu.fc.mapper.StaffSchedulePoMapper;
+import cn.edu.fc.mapper.po.RulePo;
 import cn.edu.fc.mapper.po.StaffSchedulePo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +67,46 @@ public class StaffScheduleDao {
         return StaffSchedulePo.builder().id(bo.getId()).staffId(bo.getStaffId()).start(bo.getStart()).end(bo.getEnd()).build();
     }
 
+    public StaffSchedule findById(Long id) throws RuntimeException {
+        if (null == id) {
+            return null;
+        }
+
+        String key = String.format(KEY, id);
+
+        if (redisUtil.hasKey(key)) {
+            StaffSchedule bo = (StaffSchedule) redisUtil.get(key);
+            return bo;
+        }
+
+        Optional<StaffSchedulePo> po = this.staffSchedulePoMapper.findById(id);
+        if (po.isPresent()) {
+            return this.getBo(po.get(), Optional.of(key));
+        } else {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班结果", id));
+        }
+    }
+
     public List<StaffSchedule> retrieveByStartGreaterThanEqualAndEndLessThanEqual(LocalDateTime start, LocalDateTime end, Integer page, Integer size) {
         return this.staffSchedulePoMapper.findAllByStartGreaterThanEqualAndEndLessThanEqual(start, end, PageRequest.of(page, size)).stream()
                 .map(po -> this.getBo(po,Optional.ofNullable(null)))
                 .collect(Collectors.toList());
     }
 
+    public Long findIdByStaffIdAndStartAndEnd(Long staffId, LocalDateTime start, LocalDateTime end) {
+        return this.staffSchedulePoMapper.findByStaffIdAndStartAndEnd(staffId, start, end).getId();
+    }
+
     public Long insert(StaffSchedule staffSchedule) {
         StaffSchedulePo po = this.getPo(staffSchedule);
         this.staffSchedulePoMapper.save(po);
         return po.getId();
+    }
+
+    public String save(Long id, StaffSchedule staffSchedule) {
+        StaffSchedulePo po = this.getPo(staffSchedule);
+        po.setId(id);
+        this.staffSchedulePoMapper.save(po);
+        return String.format(KEY, staffSchedule.getId());
     }
 }

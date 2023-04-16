@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -142,6 +143,23 @@ public class ScheduleService {
                 .filter(schedule -> schedule.getStaff() != null && schedule.getStaff().getId().equals(staffId))
                 .collect(Collectors.toList());
         return new PageDto<>(ret, 0, ret.size());
+    }
+
+    public void updateStaffSchedule(Long storeId, Long id, String name) {
+        Staff staff = this.staffDao.retrieveByName(name, 0, MAX_RETURN).get(0);
+        if (storeId != staff.getStoreId()) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staff.getId()));
+        }
+        StaffSchedule bo = this.staffScheduleDao.findById(id);
+        if (null != staff) {
+            StaffSchedule staffSchedule = StaffSchedule.builder().staffId(staff.getId()).start(bo.getStart()).end(bo.getEnd()).build();
+            this.staffScheduleDao.save(id, staffSchedule);
+        }
+    }
+
+    public Long findIdByStaffIdAndStartAndEnd(Long staffId, LocalDateTime start, LocalDateTime end) {
+        Long ret = this.staffScheduleDao.findIdByStaffIdAndStartAndEnd(staffId, start, end);
+        return ret;
     }
 
     private void generateSchedule(Long storeId, LocalDate date) {

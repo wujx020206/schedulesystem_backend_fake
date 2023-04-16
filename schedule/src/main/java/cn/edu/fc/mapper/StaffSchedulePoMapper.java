@@ -11,4 +11,6 @@ import java.time.LocalDateTime;
 @Repository
 public interface StaffSchedulePoMapper extends JpaRepository<StaffSchedulePo, Long> {
     Page<StaffSchedulePo> findAllByStartGreaterThanEqualAndEndLessThanEqual(LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    StaffSchedulePo findByStaffIdAndStartAndEnd(Long staffId, LocalDateTime start, LocalDateTime end);
 }
