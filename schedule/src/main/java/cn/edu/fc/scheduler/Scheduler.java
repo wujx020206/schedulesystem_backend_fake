@@ -41,7 +41,7 @@ public class Scheduler {
     }
 
     public ScheduleResult schedule(List<Data> data, List<Staff> staffs, List<String> staffPositions, LocalDate beginDate, AllRules rules) {
-        HashMap<String, Queue<StaffScheduleInternal>> staffByPosition = this.convertStaffsToMap(staffs, staffPositions);
+        HashMap<String, List<StaffScheduleInternal>> staffByPosition = this.convertStaffsToMap(staffs, staffPositions);
         ScheduleResult result = new ScheduleResult();
         for (int i = 0; i < 7; ++i) {
             LocalDate date = beginDate.plusDays(i);
@@ -53,7 +53,7 @@ public class Scheduler {
         return result;
     }
     // 填充员工
-    private ScheduleResult applyStaffToSchedule(ScheduleResult scheduleResult, HashMap<String, Queue<StaffScheduleInternal>> staffs, AllRules rules) {
+    private ScheduleResult applyStaffToSchedule(ScheduleResult scheduleResult, HashMap<String, List<StaffScheduleInternal>> staffs, AllRules rules) {
         scheduleResult.stream().forEach(schedule -> {
             if (schedule.getStaffId() != null)
                 return;
@@ -72,11 +72,11 @@ public class Scheduler {
             staff.setWeekWorkedTime(staff.getWeekWorkedTime() + schedule.getDuration());
             staff.setLastWorkedHourStart(schedule.getStart());
             staff.setLastWorkedHourEnd(schedule.getEnd());
-            this.recycleStaff(staff, staffs);
+//            this.recycleStaff(staff, staffs);
         });
         return scheduleResult;
     }
-    private StaffScheduleInternal getStaffWithWorkTimeType(HashMap<String, Queue<StaffScheduleInternal>> allStaffs, WorkTimeType type, StaffSchedule emptySchedule, AllRules rules) {
+    private StaffScheduleInternal getStaffWithWorkTimeType(HashMap<String, List<StaffScheduleInternal>> allStaffs, WorkTimeType type, StaffSchedule emptySchedule, AllRules rules) {
         Function<StaffScheduleInternal, Boolean> validate = schedule -> {
             if (schedule.getLastWorkedHourStart() == null || schedule.getLastWorkedHourStart().getDayOfWeek() != emptySchedule.getStart().getDayOfWeek())
                 schedule.setDayWorkedTime(0);
@@ -178,15 +178,22 @@ public class Scheduler {
     private void recycleStaff(StaffScheduleInternal staff, HashMap<String, Queue<StaffScheduleInternal>> allStaffs) {
         allStaffs.get(staff.getStaff().getPosition()).add(staff);
     }
-    private StaffScheduleInternal getStaffWithPositions(List<String> allowedPositions, HashMap<String, Queue<StaffScheduleInternal>> allStaffs, Function<StaffScheduleInternal, Boolean> validate) {
-        String randomPosition;
-        int cnt = 0;
-        do {
-            if (cnt++ > MAX_RANDOM_TIMES)
-                return null;
-            randomPosition = allowedPositions.get(random.nextInt(allowedPositions.size()));
-        } while(allStaffs.get(randomPosition) == null || allStaffs.get(randomPosition).isEmpty() || !validate.apply(allStaffs.get(randomPosition).peek()));
-        return allStaffs.get(randomPosition).poll();
+    private StaffScheduleInternal getStaffWithPositions(List<String> allowedPositions, HashMap<String, List<StaffScheduleInternal>> allStaffs, Function<StaffScheduleInternal, Boolean> validate) {
+//        String randomPosition;
+//        int cnt = 0;
+//        do {
+//            if (cnt++ > MAX_RANDOM_TIMES)
+//                return null;
+//            randomPosition = allowedPositions.get(random.nextInt(allowedPositions.size()));
+//        } while(allStaffs.get(randomPosition) == null || allStaffs.get(randomPosition).isEmpty() || !validate.apply(allStaffs.get(randomPosition).peek()));
+//        return allStaffs.get(randomPosition).poll();
+        List<StaffScheduleInternal> allowStaffs = allowedPositions.stream()
+                .flatMap(position -> allStaffs.getOrDefault(position, new ArrayList<>()).stream())
+                .filter(staff -> validate.apply(staff))
+                .collect(Collectors.toList());
+        if (allowStaffs.isEmpty())
+            return null;
+        return allowStaffs.get(random.nextInt(allowStaffs.size()));
     }
     // 将按时间区间分配的人数转换为按时间点分配的人数
     private List<Integer> calculateNeedStaffs(List<Data> data, boolean isWeekDay, AllRules rules) {
@@ -221,9 +228,9 @@ public class Scheduler {
         String[] timeArray = time.split(":");
         return Integer.parseInt(timeArray[0]) * 2 + (Integer.parseInt(timeArray[1]) == 30 ? 1 : 0);
     }
-    private HashMap<String, Queue<StaffScheduleInternal>> convertStaffsToMap(List<Staff> staffs, List<String> staffPositions) {
-        HashMap<String, Queue<StaffScheduleInternal>> staffByPosition = new HashMap<>();
-        staffPositions.forEach(position -> staffByPosition.put(position, new LinkedList<>()));
+    private HashMap<String, List<StaffScheduleInternal>> convertStaffsToMap(List<Staff> staffs, List<String> staffPositions) {
+        HashMap<String, List<StaffScheduleInternal>> staffByPosition = new HashMap<>();
+        staffPositions.forEach(position -> staffByPosition.put(position, new ArrayList<>()));
         Collections.shuffle(staffs);
         staffs.stream()
                 .map(staff -> new StaffScheduleInternal(staff, null, null, 0, 0))
