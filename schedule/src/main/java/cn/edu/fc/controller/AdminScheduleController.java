@@ -109,7 +109,7 @@ public class AdminScheduleController {
         return new ReturnObject(ReturnNo.OK, scheduleService.findIdByStaffIdAndStartAndEnd(staffId, startTime, endTime));
     }
 
-    @DeleteMapping("/{id}/id")
+    @PutMapping("/{id}/id")
     public ReturnObject deleteById(@PathVariable Long storeId,
                                    @PathVariable Long id) {
         this.scheduleService.deleteById(id);

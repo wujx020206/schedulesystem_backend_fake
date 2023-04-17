@@ -163,7 +163,8 @@ public class ScheduleService {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排版安排", id));
         }
 
-        this.staffScheduleDao.delete(id);
+        StaffSchedule newBo = StaffSchedule.builder().staffId(null).start(bo.getStart()).end(bo.getEnd()).duration(bo.getDuration()).build();
+        this.staffScheduleDao.save(id, newBo);
     }
 
     public Long findIdByStaffIdAndStartAndEnd(Long staffId, LocalDateTime start, LocalDateTime end) {

@@ -109,9 +109,4 @@ public class StaffScheduleDao {
         this.staffSchedulePoMapper.save(po);
         return String.format(KEY, staffSchedule.getId());
     }
-
-    public void delete(Long id) {
-        this.staffSchedulePoMapper.deleteById(id);
-    }
-
 }
