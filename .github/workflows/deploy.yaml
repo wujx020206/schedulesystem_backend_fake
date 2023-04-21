@@ -1,0 +1,40 @@
+name: Deploy to server
+
+on: [ push ]
+
+jobs:
+    deploy:
+        name: Build and Run
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup JDK 18
+              uses: actions/setup-java@v1
+              with:
+                  java-version: '18'
+            - name: Dependicies Cache
+              uses: actions/cache@v2
+              with:
+                path: ~/.m2/repository
+                key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+                restore-keys: |
+                  ${{ runner.os }}-maven-
+            - name: Compile with Maven
+              run: mvn clean install -DskipTests
+            - name: Upload JAR file to server
+              uses: garygrossgarten/github-action-scp@release
+              with:
+                local: target/schedulesystem-0.0.1-SNAPSHOT.jar
+                remote: github-upload/schedulesystem-0.0.1-SNAPSHOT.jar
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.SSH_USER }}
+                password: ${{ secrets.SSH_PASSWORD }}
+            - name: Run
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.SSH_USER }}
+                password: ${{ secrets.SSH_PASSWORD }}
+                script: |
+                  cd github-upload
+                  sh run.sh
