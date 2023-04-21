@@ -56,7 +56,7 @@ public class PreferenceDao {
     }
 
     private void setBo(Preference bo) {
-        bo.setStaffDao(bo.getStaffDao());
+        bo.setStaffDao(this.staffDao);
     }
 
     private PreferencePo getPo(Preference bo) {

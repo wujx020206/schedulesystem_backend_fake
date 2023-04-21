@@ -33,6 +33,8 @@ public class ScheduleControllerTest {
 
     private static final String RETRIEVE_SCHEDULE = "/schedule/{storeId}/day/{date}/day";
 
+    private static final String UPDATE_SCHEDULE = "/schedule/{storeId}/{id}/{name}/period";
+
     @BeforeAll
     public static void setup(){
         JwtHelper jwtHelper = new JwtHelper();
@@ -50,6 +52,23 @@ public class ScheduleControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].staff.name", notNullValue()))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void updateStaff() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 1,1,"李四")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
