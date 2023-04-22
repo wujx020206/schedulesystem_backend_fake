@@ -147,9 +147,9 @@ public class ScheduleService {
 
     public void updateStaffSchedule(Long storeId, Long id, String name) {
         Staff staff = this.staffDao.retrieveByName(name, 0, MAX_RETURN).get(0);
-        if (storeId != staff.getStoreId()) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staff.getId()));
-        }
+//        if (storeId != staff.getStoreId()) {
+//            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staff.getId()));
+//        }
         StaffSchedule bo = this.staffScheduleDao.findById(id);
         if (null != staff) {
             StaffSchedule staffSchedule = StaffSchedule.builder().staffId(staff.getId()).start(bo.getStart()).end(bo.getEnd()).build();

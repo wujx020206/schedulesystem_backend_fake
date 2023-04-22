@@ -30,7 +30,7 @@ import static cn.edu.fc.javaee.core.util.Common.putUserFields;
 public class PreferenceDao {
     private final static Logger logger = LoggerFactory.getLogger(PreferenceDao.class);
 
-    private final static String KEY = "E%s";
+    private final static String KEY = "E%d";
 
     @Value("3600")
     private int timeout;
@@ -56,7 +56,7 @@ public class PreferenceDao {
     }
 
     private void setBo(Preference bo) {
-        bo.setStaffDao(bo.getStaffDao());
+        bo.setStaffDao(this.staffDao);
     }
 
     private PreferencePo getPo(Preference bo) {

@@ -35,7 +35,7 @@ public class PreferenceService {
         List<Preference> preferences = this.preferenceDao.retrieveAll(page, pageSize);
         List<PreferenceDto> ret = preferences.stream().map(obj -> {
             obj.setStaffDao(staffDao);
-            PreferenceDto dto = PreferenceDto.builder().type(obj.getType()).staffName(obj.getStaff().getName()).value(obj.getValue()).build();
+            PreferenceDto dto = PreferenceDto.builder().type(obj.getType()).staffName(this.staffDao.findById(obj.getStaffId()).getName()).value(obj.getValue()).build();
             return dto;
         }).collect(Collectors.toList());
         return new PageDto<>(ret, page, pageSize);

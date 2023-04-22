@@ -2,6 +2,7 @@ package cn.edu.fc.dao.bo;
 
 import cn.edu.fc.dao.StaffDao;
 import cn.edu.fc.javaee.core.model.bo.SSObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -45,7 +46,8 @@ public class Preference extends SSObject implements Serializable {
     @Setter
     private String value;
 
-    @Getter
+    @ToString.Exclude
+    @JsonIgnore
     @Setter
     private StaffDao staffDao;
 
