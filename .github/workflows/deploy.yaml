@@ -47,23 +47,41 @@ jobs:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'core/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Core
+        run: echo "Build Core"
   build-forecast:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'forecast/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Forecast
+        run: echo "Build Forecast"
   build-rule:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'rule/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Rule
+        run: echo "Build Rule"
   build-schedule:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'schedule/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Schedule
+        run: echo "Build Schedule"
   build-staff:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'staff/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Staff
+        run: echo "Build Staff"
   build-store:
     needs: [ build-for-one ]
     if: startsWith(github.event_path, 'store/')
     runs-on: ubuntu-latest
+    steps:
+      - name: Build Store
+        run: echo "Build Store"
