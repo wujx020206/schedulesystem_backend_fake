@@ -5,12 +5,11 @@ on:
   push:
 
 jobs:
-  deploy:
+  build-for-one:
     strategy:
       matrix:
         directory: [ core, forecast, rule, schedule, staff, store ]
     runs-on: ubuntu-latest
-    if: startsWith(github.event_path, '${{ matrix.directory }}/')
     steps:
       - uses: actions/checkout@v2
       - name: Setup JDK 18
@@ -43,3 +42,28 @@ jobs:
           script: |
             cd schedulesystem
             sh run.sh ${{ matrix.directory }}-0.0.1-SNAPSHOT
+
+  build-core:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'core/')
+    runs-on: ubuntu-latest
+  build-forecast:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'forecast/')
+    runs-on: ubuntu-latest
+  build-rule:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'rule/')
+    runs-on: ubuntu-latest
+  build-schedule:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'schedule/')
+    runs-on: ubuntu-latest
+  build-staff:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'staff/')
+    runs-on: ubuntu-latest
+  build-store:
+    needs: [ build-for-one ]
+    if: startsWith(github.event_path, 'store/')
+    runs-on: ubuntu-latest
