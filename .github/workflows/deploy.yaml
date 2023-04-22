@@ -1,40 +1,52 @@
 name: Deploy to server
 
-on: [ push ]
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'core/**'
+      - 'forecast/**'
+      - 'rule/**'
+      - 'schedule/**'
+      - 'staff/**'
+      - 'store/**'
 
 jobs:
-    deploy:
-        name: Build and Run
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Setup JDK 18
-              uses: actions/setup-java@v1
-              with:
-                  java-version: '18'
-            - name: Dependicies Cache
-              uses: actions/cache@v2
-              with:
-                path: ~/.m2/repository
-                key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-                restore-keys: |
-                  ${{ runner.os }}-maven-
-            - name: Compile with Maven
-              run: mvn clean install -DskipTests
-            - name: Upload JAR file to server
-              uses: garygrossgarten/github-action-scp@release
-              with:
-                local: target/schedulesystem-0.0.1-SNAPSHOT.jar
-                remote: github-upload/schedulesystem-0.0.1-SNAPSHOT.jar
-                host: ${{ secrets.HOST }}
-                username: ${{ secrets.SSH_USER }}
-                password: ${{ secrets.SSH_PASSWORD }}
-            - name: Run
-              uses: appleboy/ssh-action@master
-              with:
-                host: ${{ secrets.HOST }}
-                username: ${{ secrets.SSH_USER }}
-                password: ${{ secrets.SSH_PASSWORD }}
-                script: |
-                  cd github-upload
-                  sh run.sh
+  build-for-one:
+    strategy:
+      matrix:
+        directory: [ core, forecast, rule, schedule, staff, store ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup JDK 18
+        uses: actions/setup-java@v1
+        with:
+          java-version: '18'
+      - name: Dependicies Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Compile Module ${{ matrix.directory }}
+        run: mvn clean install -pl ${{ matrix.directory }} -am -DskipTests
+      - name: Upload Module ${{ matrix.directory }} to Server
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: ${{ matrix.directory }}/target/${{ matrix.directory }}-0.0.1-SNAPSHOT.jar
+          remote: schedulesystem/${{ matrix.directory }}-0.0.1-SNAPSHOT.jar
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+      - name: Run Module ${{ matrix.directory }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd schedulesystem
+            sh run.sh ${{ matrix.directory }}-0.0.1-SNAPSHOT
