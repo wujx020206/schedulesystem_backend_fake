@@ -165,7 +165,7 @@
                             <executable>sh</executable>
                             <arguments>
                                 <argument>clear_image.sh</argument>
-                                <argument>xmu-oomall/${project.name}:${project.version}</argument>
+                                <argument>fc-schedulesystem/${project.name}:${project.version}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -186,7 +186,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>xmu-oomall/${project.name}</repository>
+                    <repository>fc/${project.name}</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
