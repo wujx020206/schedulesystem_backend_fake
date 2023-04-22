@@ -144,7 +144,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.edu.fc.StaffApplication</mainClass>
+                    <mainClass>cn.edu.fc.StoreApplication</mainClass>
                 </configuration>
             </plugin>
 
