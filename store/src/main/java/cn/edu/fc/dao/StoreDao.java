@@ -91,7 +91,7 @@ public class StoreDao {
     public Store findByName(String name) {
         StorePo po = this.storePoMapper.findByName(name);
         if (null == po) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), null));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", null));
         }
 
         return getBo(po, Optional.empty());

@@ -38,7 +38,6 @@ public class AdminStoreController {
     }
 
     @GetMapping("/id/{storeId}/store")
-    //@Audit(departName = "stores")
     public ReturnObject getStore(@PathVariable Long storeId) {
         StoreDto ret = this.storeService.findStoreById(storeId);
         return new ReturnObject(ReturnNo.OK, ret);
