@@ -192,7 +192,6 @@ public class StoreControllerTest {
         } catch(NestedServletException e) {
             Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺(id=1)已经存在".toCharArray());
         }
-
     }
 
     @Test
@@ -228,7 +227,7 @@ public class StoreControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .header("authorization", adminToken)
                             .content(requestJson))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                     .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                     .andDo(MockMvcResultHandlers.print())

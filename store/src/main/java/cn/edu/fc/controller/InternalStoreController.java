@@ -24,9 +24,9 @@ public class InternalStoreController {
         this.storeService = storeService;
     }
 
-    @GetMapping("/{storeId}/store")
-    public ReturnObject getStore(@PathVariable Long storeId) {
-        StoreDto ret = this.storeService.findStoreById(storeId);
-        return new ReturnObject(ReturnNo.OK, ret);
-    }
+//    @GetMapping("/{storeId}/store")
+//    public ReturnObject getStore(@PathVariable Long storeId) {
+//        StoreDto ret = this.storeService.findStoreById(storeId);
+//        return new ReturnObject(ReturnNo.OK, ret);
+//    }
 }

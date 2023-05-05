@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(classes = StoreApplication.class)
 @Transactional
@@ -24,12 +25,21 @@ public class StoreDaoTest {
     private StoreDao storeDao;
 
     @Test
-    public void testFindById(){
+    public void testFindById1(){
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
         Store store = storeDao.findById(1L);
         assertEquals("门店1",store.getName());
         assertEquals("福建省厦门市翔安区",store.getAddress());
+    }
+
+    @Test
+    public void testFindById2(){
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        Store store = storeDao.findById(null);
+        assertNull(store);
     }
 }
