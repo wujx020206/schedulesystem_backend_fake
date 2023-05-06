@@ -136,13 +136,14 @@ public class AdminStaffController {
 
     @PutMapping("/{staffId}/preferences/{preferenceId}/preference/{type}")
     public ReturnObject updateStaffPreference(@PathVariable Long staffId,
+                                              @PathVariable Long preferenceId,
                                               @PathVariable Byte type,
                                               @Valid @RequestBody UpdatePreferenceVo vo) {
         this.preferenceService.updatePreference(staffId, type, vo.getValue());
         return new ReturnObject(ReturnNo.OK);
     }
 
-    @DeleteMapping("/{staffId}/preferences/{preferenceId}/preference")
+    @DeleteMapping("/{staffId}/preferences/{type}/preference")
     public ReturnObject deleteStaffPreference(@PathVariable Long staffId,
                                               @PathVariable Byte type) {
         this.preferenceService.deletePreference(type, staffId);

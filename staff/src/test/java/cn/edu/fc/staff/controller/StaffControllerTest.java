@@ -3,6 +3,7 @@ package cn.edu.fc.staff.controller;
 import cn.edu.fc.StaffApplication;
 import cn.edu.fc.javaee.core.util.JwtHelper;
 import cn.edu.fc.javaee.core.util.RedisUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.NestedServletException;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -35,6 +37,12 @@ public class StaffControllerTest {
 
     private static final String RETRIEVE_ID = "/staff/name/{staffName}/staffId";
 
+    private static final String RETRIEVE_STORE_STAFFS = "/staff/{storeId}/staffs";
+
+    private static final String FIND_STAFF_BY_ID = "/staff/{staffId}/staff";
+
+    private static final String FIND_STAFF_BY_NAME = "/staff/name/{staffName}/staff";
+
     private static final String CREATE_STAFF = "/staff/staff";
 
     private static final String UPDATE_STAFF = "/staff/{storeId}/staff";
@@ -42,6 +50,20 @@ public class StaffControllerTest {
     private static final String DELETE_STAFF = "/staff/{staffId}/staff";
 
     private static final String RETRIEVE_PREFERENCE = "/staff/preferences";
+
+    private static final String RETRIEVE_PREFERENCE_BY_STAFF = "/staff/{staffId}/preferences";
+
+    private static final String RETRIEVE_PREFERENCE_BY_TYPE = "/staff/preferences/{type}/preferences";
+
+    private static final String RETRIEVE_PREFERENCE_BY_STAFF_AND_TYPE = "/staff/{staffId}/preferences/{type}/preference";
+
+    private static final String FIND_PREFERENCEID_BY_STAFF_AND_TYPE = "/staff/{staffId}/preferences/{type}/preference/id";
+
+    private static final String CREATE_PREFERENCE = "/staff/{staffId}/preference";
+
+    private static final String UPDATE_PREFERENCE = "/staff/{staffId}/preferences/{preferenceId}/preference/{type}";
+
+    private static final String DELETE_PREFERENCE = "/staff/{staffId}/preferences/{type}/preference";
 
     @BeforeAll
     public static void setup(){
@@ -62,7 +84,7 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("wujiaxi")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("张三")))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
@@ -72,7 +94,7 @@ public class StaffControllerTest {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_ID, "wujiaxi")
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_ID, "张三")
                         .header("authorization", adminToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .param("page", "1")
@@ -81,6 +103,54 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0]", is(1)))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findByStoreId() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_STORE_STAFFS, 1)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("张三")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findByStaffId() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STAFF_BY_ID, 1)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("张三")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findByStaffName() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STAFF_BY_NAME, "李四")
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("李四")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].position", is("副经理")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].phone", is("11111111111")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].email", is("ls@mail.com")))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
@@ -111,7 +181,7 @@ public class StaffControllerTest {
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
-        String requestJson="{\"name\": \"xicha\", \"position\": \"123\",\"phone\": \"123.0\", \"email\":\"123@qq.com\",\"storeId\": 1}";
+        String requestJson="{\"name\": \"张三\", \"position\": \"门店经理\",\"phone\": \"13511111111\", \"email\":\"123@qq.com\",\"storeId\": 1}";
         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_STAFF, 1)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)
@@ -153,7 +223,134 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("8")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("3 4 5 6")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrievePreferencesByStaffId() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_PREFERENCE_BY_STAFF, 1)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("3 4 5 6")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[1].value", is("8 18")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[2].value", is("4 20")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrievePreferencesByType() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_PREFERENCE_BY_TYPE, 0)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("3 4 5 6")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[1].staffName", is("李四")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[2].staffName", is("王五")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrievePreferencesByStaffAndType() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_PREFERENCE_BY_STAFF_AND_TYPE, 1, 0)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.value", is("3 4 5 6")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findPreferenceIDByStaffAndType() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_PREFERENCEID_BY_STAFF_AND_TYPE, 1, 0)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data", is(1)))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void createPreference() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"type\": 0, \"value\": \"1 2 3\"}";
+
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 1)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken)
+                            .content(requestJson))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工(id=1)已经存在".toCharArray());
+        }
+
+    }
+
+    @Test
+    public void updatePreference() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"value\": \"2 3 4\"}";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_PREFERENCE, 1, 1, 0)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void deletePreference() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
