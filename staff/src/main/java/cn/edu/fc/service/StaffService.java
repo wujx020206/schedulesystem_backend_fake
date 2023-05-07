@@ -79,32 +79,13 @@ public class StaffService {
         return new PageDto<>(ret, page, pageSize);
     }
 
-    public List<String> retrievePositions() {
-        List<String> ret = new ArrayList();
-        ret.add("STOREMANAGER");
-        ret.add("ASSISTANTMANAGER");
-        ret.add("TEAMLEADER");
-        ret.add("CASHIER");
-        ret.add("GUIDE");
-        ret.add("WAREHOUSE");
-        return ret;
-    }
-
-    public List<String> retrieveSkills() {
-        List<String> ret = new ArrayList();
-        ret.add("CASHIER");
-        ret.add("GUIDE");
-        ret.add("WAREHOUSE");
-        return ret;
-    }
-
-    public void createStaff(String name, String position, String phone, String email, Long shopId) {
-        Store shop = this.storeDao.findById(shopId);
-        if (null == shop) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", shopId));
+    public void createStaff(String name, String position, String phone, String email, Long storeId) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
-        Staff staff = Staff.builder().name(name).position(position).phone(phone).email(email).storeId(shopId).build();
+        Staff staff = Staff.builder().name(name).position(position).phone(phone).email(email).storeId(storeId).build();
         Long staffId = this.staffDao.insert(staff);
 
         Preference pre1 = Preference.builder().type((byte) 0).staffId(staffId).value(null).build();

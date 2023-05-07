@@ -90,7 +90,7 @@ public class PreferenceService {
     public void updatePreference(Long staffId, Byte type, String value) {
         Preference preference = this.preferenceDao.findByTypeAndStaffId(type, staffId);
         if (null == preference) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", staffId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", null));
         }
 
         preference.setValue(value);
@@ -100,7 +100,7 @@ public class PreferenceService {
     public void deletePreference(Byte type, Long staffId) {
         Preference preference = this.preferenceDao.findByTypeAndStaffId(type, staffId);
         if (null == preference) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staffId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", null));
         }
 
         this.preferenceDao.delete(type, staffId);

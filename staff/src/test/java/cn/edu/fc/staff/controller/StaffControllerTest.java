@@ -156,7 +156,7 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void createStaff() throws Exception {
+    public void createStaff1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
@@ -175,7 +175,32 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void updateStaff() throws Exception {
+    public void createStaff2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"name\": \"张三\", \"position\": \"门店经理\",\"phone\": \"13511111111\", \"email\":\"123@qq.com\",\"storeId\": 0}";
+
+        try{
+            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STAFF)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken)
+                            .content(requestJson))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在".toCharArray());
+        }
+
+    }
+
+    @Test
+    public void updateStaff1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
@@ -194,13 +219,38 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void deleteStaff() throws Exception {
+    public void updateStaff2() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF,1)
+        String requestJson="{\"name\": \"张三\", \"position\": \"门店经理\",\"phone\": \"13511111111\", \"email\":\"123@qq.com\",\"storeId\": 1}";
+
+        try{
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_STAFF, 0)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken)
+                            .content(requestJson))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=0)不存在".toCharArray());
+        }
+
+    }
+
+    @Test
+    public void deleteStaff1() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF,2)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -208,6 +258,28 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void deleteStaff2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STAFF,0)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=0)不存在".toCharArray());
+        }
+
     }
 
     @Test
@@ -241,7 +313,6 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].value", is("3 4 5 6")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[1].value", is("8 18")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[2].value", is("4 20")))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }
@@ -295,7 +366,27 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void createPreference() throws Exception {
+    public void createPreference1() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"type\": 2, \"value\": \"4 20\"}";
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void createPreference2() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
@@ -316,11 +407,34 @@ public class StaffControllerTest {
         } catch(NestedServletException e) {
             Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工(id=1)已经存在".toCharArray());
         }
-
     }
 
     @Test
-    public void updatePreference() throws Exception {
+    public void createPreference3() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"type\": 0, \"value\": \"1 2 3\"}";
+
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 0)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken)
+                            .content(requestJson))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=0)不存在".toCharArray());
+        }
+    }
+
+    @Test
+    public void updatePreference1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
@@ -339,7 +453,30 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void deletePreference() throws Exception {
+    public void updatePreference2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"value\": \"2 3 4\"}";
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_PREFERENCE, 1, 3, 2)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken)
+                            .content(requestJson))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在".toCharArray());
+        }
+    }
+
+    @Test
+    public void deletePreference1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
@@ -353,5 +490,26 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void deletePreference2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .header("authorization", adminToken))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn().getResponse().getContentAsString();
+        } catch(NestedServletException e) {
+            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在".toCharArray());
+        }
     }
 }
