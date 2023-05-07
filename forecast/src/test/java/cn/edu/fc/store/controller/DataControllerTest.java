@@ -34,6 +34,12 @@ public class DataControllerTest {
 
     private static final String RETRIEVE_DATA_BY_STORE = "/forecast/{storeId}/data";
 
+    private static final String RETRIEVE_DATA_BY_PERIOD = "/forecast/{storeId}/period";
+
+    private static final String RETRIEVE_DATA_BY_DATE = "/forecast/{storeId}/{date}/day";
+
+    private static final String RETRIEVE_DATA_BY_DATE_AND_TIME = "/forecast/{storeId}/{date}/day/time";
+
     @BeforeAll
     public static void setup(){
         JwtHelper jwtHelper = new JwtHelper();
@@ -53,7 +59,67 @@ public class DataControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].date", is("2023-03-28")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].date", is("2023-03-27")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].beginTime", is("09:00:00")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrieveDataByPeriod() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        String requestJson="{\"beginDate\": \"2023-04-01\", \"endDate\": \"2023-04-02\"}";
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_PERIOD,1)
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson)
+                        .param("page", "1")
+                        .param("pageSize", "10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].date", is("2023-04-01")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[1].storeName", is("门店1")))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrieveDataByDate() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_DATE, 1, "2023-04-01")
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .param("page", "1")
+                        .param("pageSize", "10"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].beginTime", is("09:00:00")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].num", is(0.0)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[1].num", is(0.1)))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void retrieveDataByDateAndTime() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        String requestJson="{\"beginTime\": \"09:00:00\", \"endTime\": \"09:30:00\"}";
+        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_DATE_AND_TIME, 1, "2023-04-01")
+                        .header("authorization", adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(requestJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.beginTime", is("09:00:00")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.num", is(0.0)))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
     }

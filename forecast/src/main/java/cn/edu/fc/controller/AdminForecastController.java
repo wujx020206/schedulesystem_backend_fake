@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping(value = "/forecast", produces = "application/json;charset=UTF-8")
@@ -46,18 +47,20 @@ public class AdminForecastController {
 
     @GetMapping("/{storeId}/{date}/day")
     public ReturnObject getDataByDay(@PathVariable Long storeId,
-                                     @PathVariable LocalDate date,
+                                     @PathVariable String date,
                                      @RequestParam(required = false, defaultValue = "1") Integer page,
                                      @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageDto<DataDto> ret = this.dataService.retrieveDataByStoreIdAndDate(storeId, date, page, pageSize);
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        PageDto<DataDto> ret = this.dataService.retrieveDataByStoreIdAndDate(storeId, localDate, page, pageSize);
         return new ReturnObject(ReturnNo.OK, ret);
     }
 
-    @GetMapping("/{storeId}/{date}/{time}/day")
+    @GetMapping("/{storeId}/{date}/day/time")
     public ReturnObject getDataByDayAndTime(@PathVariable Long storeId,
-                                            @PathVariable LocalDate date,
+                                            @PathVariable String date,
                                             @Validated @RequestBody TimeVo timeVo) {
-        DataDto ret = this.dataService.findDataStoreIdAndDateAndBeginTimeAndEndTime(storeId, date, timeVo.getBeginTime(), timeVo.getEndTime());
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DataDto ret = this.dataService.findDataStoreIdAndDateAndBeginTimeAndEndTime(storeId, localDate, timeVo.getBeginTime(), timeVo.getEndTime());
         return new ReturnObject(ReturnNo.OK, ret);
     }
 }

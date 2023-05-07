@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class DataService {
     public PageDto<DataDto> retrieveDataByStoreIdAndDateBetween(Long storeId, LocalDate beginDate, LocalDate endDate, Integer page, Integer pageSize) {
         List<Data> dataList = this.dataDao.retrieveByStoreIdAndDateBetween(storeId, beginDate, endDate, page, pageSize);
         List<DataDto> ret = dataList.stream().map(obj -> {
-            DataDto dto = DataDto.builder().storeName(obj.getStore().getName()).date(obj.getDate()).beginTime(obj.getBeginTime()).endTime(obj.getEndTime()).num(obj.getNum()).build();
+            DataDto dto = DataDto.builder().storeName(this.storeDao.findById(obj.getStoreId()).getName()).date(obj.getDate()).beginTime(obj.getBeginTime()).endTime(obj.getEndTime()).num(obj.getNum()).build();
             return dto;
         }).collect(Collectors.toList());
         return new PageDto<>(ret, page, pageSize);
@@ -49,7 +50,7 @@ public class DataService {
     public PageDto<DataDto> retrieveDataByStoreIdAndDate(Long storeId, LocalDate date, Integer page, Integer pageSize) {
         List<Data> dataList = this.dataDao.retrieveByStoreIdAndDate(storeId, date, page, pageSize);
         List<DataDto> ret = dataList.stream().map(obj -> {
-            DataDto dto = DataDto.builder().storeName(obj.getStore().getName()).date(obj.getDate()).beginTime(obj.getBeginTime()).endTime(obj.getEndTime()).num(obj.getNum()).build();
+            DataDto dto = DataDto.builder().storeName(this.storeDao.findById(obj.getStoreId()).getName()).date(obj.getDate()).beginTime(obj.getBeginTime()).endTime(obj.getEndTime()).num(obj.getNum()).build();
             return dto;
         }).collect(Collectors.toList());
         return new PageDto<>(ret, page, pageSize);
@@ -57,7 +58,7 @@ public class DataService {
 
     public DataDto findDataStoreIdAndDateAndBeginTimeAndEndTime(Long storeId, LocalDate date, String beginTime, String endTime) {
         Data data = this.dataDao.findByStoreIdAndDateAndBeginTimeAndEndTime(storeId, date, beginTime, endTime);
-        DataDto dto = DataDto.builder().storeName(data.getStore().getName()).date(data.getDate()).beginTime(data.getBeginTime()).endTime(data.getEndTime()).num(data.getNum()).build();
+        DataDto dto = DataDto.builder().storeName(this.storeDao.findById(data.getStoreId()).getName()).date(data.getDate()).beginTime(data.getBeginTime()).endTime(data.getEndTime()).num(data.getNum()).build();
         return dto;
     }
 }
