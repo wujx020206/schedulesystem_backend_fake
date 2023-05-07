@@ -71,65 +71,7 @@ public class StoreDao {
         if (po.isPresent()) {
             return this.getBo(po.get(), Optional.of(key));
         } else {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "商铺", id));
+            return null;
         }
-    }
-
-    public List<Store> retrieveAll(Integer page, Integer pageSize) throws RuntimeException {
-        List<StorePo> retList = this.storePoMapper.findAll(PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Store> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
-    public Store findByName(String name) {
-        StorePo po = this.storePoMapper.findByName(name);
-        if (null == po) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), null));
-        }
-
-        return getBo(po, Optional.empty());
-    }
-
-    public Store findByNameAndAddress(String name, String address) {
-        StorePo po = this.storePoMapper.findByNameAndAddress(name, address);
-        if (null == po) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), po.getId()));
-        }
-
-        return getBo(po, Optional.empty());
-    }
-
-    public Long insert(Store store, UserDto user) throws RuntimeException {
-        StorePo po = this.storePoMapper.findByNameAndAddress(store.getName(), store.getAddress());
-        if (null == po) {
-            StorePo storePo = getPo(store);
-            putUserFields(storePo, "creator", user);
-            putGmtFields(storePo, "create");
-            this.storePoMapper.save(storePo);
-            return storePo.getId();
-        } else {
-            throw new BusinessException(ReturnNo.STORE_EXIST, String.format(ReturnNo.STORE_EXIST.getMessage(), po.getId()));
-        }
-    }
-
-    public String save(Long storeId, Store store, UserDto user) {
-        StorePo po = getPo(store);
-        po.setId(storeId);
-        if (null != user) {
-            putUserFields(po, "modifier", user);
-            putGmtFields(po, "modified");
-        }
-        this.storePoMapper.save(po);
-        return String.format(KEY, store.getId());
-    }
-
-    public void delete(Long id) {
-        this.storePoMapper.deleteById(id);
     }
 }

@@ -59,26 +59,6 @@ public class RuleDao {
         return po;
     }
 
-    public Rule findById(Long id) throws RuntimeException {
-        if (null == id) {
-            return null;
-        }
-
-        String key = String.format(KEY, id);
-
-        if (redisUtil.hasKey(key)) {
-            Rule bo = (Rule) redisUtil.get(key);
-            return bo;
-        }
-
-        Optional<RulePo> po = this.rulePoMapper.findById(id);
-        if (po.isPresent()) {
-            return this.getBo(po.get(), Optional.of(key));
-        } else {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", id));
-        }
-    }
-
     public List<Rule> retrieveAll(Integer page, Integer pageSize) throws RuntimeException {
         List<RulePo> retList = this.rulePoMapper.findAll(PageRequest.of(0, MAX_RETURN))
                 .stream().collect(Collectors.toList());
@@ -93,18 +73,6 @@ public class RuleDao {
 
     public List<Rule> retrieveByStoreId(Long storeId, Integer page, Integer pageSize) throws RuntimeException {
         List<RulePo> retList = this.rulePoMapper.findByStoreId(storeId, PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (null == retList || retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Rule> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
-    public List<Rule> retrieveByStoreId(Long storeId) throws RuntimeException {
-        List<RulePo> retList = this.rulePoMapper.findByStoreId(storeId)
                 .stream().collect(Collectors.toList());
         if (null == retList || retList.size() == 0)
             return new ArrayList<>();
