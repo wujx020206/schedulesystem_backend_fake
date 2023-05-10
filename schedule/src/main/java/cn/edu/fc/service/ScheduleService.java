@@ -192,9 +192,10 @@ public class ScheduleService {
         }
 
         Staff staff = this.staffDao.retrieveByName(name, 0, MAX_RETURN).get(0);
-//        if (storeId != staff.getStoreId()) {
-//            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staff.getId()));
-//        }
+        if (storeId != staff.getStoreId()) {
+            throw new BusinessException(ReturnNo.RESOURCE_NOTEXIST_IN, String.format(ReturnNo.RESOURCE_NOTEXIST_IN.getMessage(), "员工", staff.getId(), "门店", storeId));
+        }
+
         StaffSchedule bo = this.staffScheduleDao.findById(id);
         if (null != staff) {
             StaffSchedule staffSchedule = StaffSchedule.builder().staffId(staff.getId()).start(bo.getStart()).end(bo.getEnd()).build();

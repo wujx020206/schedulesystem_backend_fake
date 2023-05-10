@@ -21,6 +21,7 @@ public enum ReturnNo {
 
     //状态码 404
     RESOURCE_ID_NOTEXIST(4,"%s对象(id=%d)不存在"),
+    RESOURCE_NOTEXIST_IN(19,"%s对象(id=%d)不存在在%s对象(id=%d)中"),
 
     //状态码 500
     INTERNAL_SERVER_ERR(2,"服务器内部错误"),

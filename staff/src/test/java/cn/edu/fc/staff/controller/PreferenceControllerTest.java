@@ -147,6 +147,9 @@ public class PreferenceControllerTest {
 
         String requestJson="{\"type\": 2, \"value\": \"4 20\"}";
 
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken));
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 1)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)
@@ -220,6 +223,9 @@ public class PreferenceControllerTest {
 
         String requestJson="{\"value\": \"2 3 4\"}";
 
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken));
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_PREFERENCE, 1, 3, 2)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -252,6 +258,9 @@ public class PreferenceControllerTest {
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken));
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
