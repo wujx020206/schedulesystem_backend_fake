@@ -102,19 +102,13 @@ public class StoreControllerTest {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
-        try {
-            this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STORE,0)
-                            .header("authorization", adminToken)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .param("page", "1")
-                            .param("pageSize", "10"))
-                    .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn().getResponse().getContentAsString();
-        } catch(NestedServletException e) {
-            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在".toCharArray());
-        }
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STORE,0)
+                                .header("authorization", adminToken)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .param("page", "1")
+                                .param("pageSize", "10")),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
     }
 
     @Test
@@ -138,17 +132,11 @@ public class StoreControllerTest {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
-        try {
-            this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STORE_BY_NAME,"门店x")
-                            .header("authorization", adminToken)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(MockMvcResultMatchers.status().isNotFound())
-                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn().getResponse().getContentAsString();
-        } catch(NestedServletException e) {
-            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=null)不存在".toCharArray());
-        }
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STORE_BY_NAME,"门店x")
+                                .header("authorization", adminToken)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=null)不存在");
     }
 
     @Test
@@ -179,19 +167,12 @@ public class StoreControllerTest {
 
         String requestJson="{\"name\": \"门店1\", \"address\": \"福建省厦门市翔安区\",\"size\": 123.3}";
 
-        try {
-            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STORE)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("authorization", adminToken)
-                            .content(requestJson))
-                    .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(1))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn().getResponse().getContentAsString();
-        } catch(NestedServletException e) {
-            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺(id=1)已经存在".toCharArray());
-        }
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STORE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("authorization", adminToken)
+                                .content(requestJson)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺(id=1)已经存在");
     }
 
     @Test
@@ -222,19 +203,12 @@ public class StoreControllerTest {
 
         String requestJson="{\"name\": \"xicha\", \"address\": \"123\",\"size\": 123.0}";
 
-        try {
-            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_STORE, 0)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("authorization", adminToken)
-                            .content(requestJson))
-                    .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn().getResponse().getContentAsString();
-        } catch(NestedServletException e) {
-            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在".toCharArray());
-        }
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_STORE, 0)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("authorization", adminToken)
+                                .content(requestJson)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
     }
 
     @Test
@@ -261,17 +235,10 @@ public class StoreControllerTest {
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
-        try {
-            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STORE,0)
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .header("authorization", adminToken))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
-                    .andDo(MockMvcResultHandlers.print())
-                    .andReturn().getResponse().getContentAsString();
-        } catch(NestedServletException e) {
-            Assertions.assertArrayEquals(e.getMessage().toCharArray(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在".toCharArray());
-        }
+        Assertions.assertThrows(NestedServletException.class, ()->
+                this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STORE,0)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("authorization", adminToken)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
     }
 }

@@ -70,6 +70,11 @@ public class ScheduleService {
 
     //@JsonIgnore
     public PageDto<StaffScheduleDto> retrieveScheduleByDay(Long storeId, LocalDate date) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffSchedule> ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), 0, MAX_RETURN);
         if (null == ret || ret.isEmpty()) {
             logger.info("No schedule found for day {}, generating...", date);
@@ -81,6 +86,11 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByDayAndSkill(Long storeId, LocalDate date, String skill) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
@@ -90,6 +100,11 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByDayAndPosition(Long storeId, LocalDate date, String position) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
@@ -99,6 +114,11 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByDayAndStaff(Long storeId, LocalDate date, Long staffId) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
@@ -108,6 +128,11 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByWeek(Long storeId, LocalDate date) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffSchedule> ret = staffScheduleDao.retrieveByStartGreaterThanEqualAndEndLessThanEqual(date.atStartOfDay(), date.plusDays(7).atStartOfDay(), 0, MAX_RETURN);
         if (null == ret || ret.isEmpty()) {
             logger.info("No schedule found for week begin at {}, generating...", date);
@@ -119,7 +144,12 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByWeekAndSkill(Long storeId, LocalDate date, String skill) {
-        List<StaffScheduleDto> ret = this.retrieveScheduleByWeek(storeId, date)
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
+        List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
                 .filter(staff -> staff.getStaff() != null && staff.getStaff().getPosition().contains(skill))
@@ -128,6 +158,11 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByWeekAndPosition(Long storeId, LocalDate date, String position) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
@@ -137,7 +172,12 @@ public class ScheduleService {
     }
 
     public PageDto<StaffScheduleDto> retrieveScheduleByWeekAndStaff(Long storeId, LocalDate date, Long staffId) {
-        List<StaffScheduleDto> ret = this.retrieveScheduleByWeek(storeId, date)
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
+        List<StaffScheduleDto> ret = this.retrieveScheduleByDay(storeId, date)
                 .getList()
                 .stream()
                 .filter(schedule -> schedule.getStaff() != null && schedule.getStaff().getId().equals(staffId))
@@ -146,6 +186,11 @@ public class ScheduleService {
     }
 
     public void updateStaffSchedule(Long storeId, Long id, String name) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         Staff staff = this.staffDao.retrieveByName(name, 0, MAX_RETURN).get(0);
 //        if (storeId != staff.getStoreId()) {
 //            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", staff.getId()));
@@ -157,10 +202,15 @@ public class ScheduleService {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long storeId, Long id) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         StaffSchedule bo = this.staffScheduleDao.findById(id);
         if (null == bo) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排版安排", id));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班安排", id));
         }
 
         this.staffScheduleDao.delete(id);
@@ -221,12 +271,6 @@ public class ScheduleService {
                 return rule;
             }
         }
-        throw new BusinessException(ReturnNo.RULE_NOT_FIND, String.format(ReturnNo.RULE_NOT_FIND.getMessage(), type));
-    }
-
-    private <T> T checkResponse(InternalReturnObject<T> resp) {
-        if (resp.getErrno() != ReturnNo.OK.getErrNo())
-            throw new BusinessException(ReturnNo.getByCode(resp.getErrno()), resp.getErrmsg());
-        return resp.getData();
+        throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班规则", null));
     }
 }

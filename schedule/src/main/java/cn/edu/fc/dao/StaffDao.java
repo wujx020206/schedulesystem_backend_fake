@@ -86,18 +86,6 @@ public class StaffDao {
         }
     }
 
-    public List<Staff> retrieveAll(Integer page, Integer pageSize) throws RuntimeException {
-        List<StaffPo> retList = this.staffPoMapper.findAll(PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (null == retList || retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Staff> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
     public List<Staff> retrieveByShopId(Long storeId, Integer page, Integer pageSize) {
         List<StaffPo> retList = this.staffPoMapper.findByStoreId(storeId, PageRequest.of(0, MAX_RETURN))
                 .stream().collect(Collectors.toList());
@@ -120,27 +108,5 @@ public class StaffDao {
             return getBo(po,Optional.ofNullable(null));
         }).collect(Collectors.toList());
         return ret;
-    }
-
-    public Long insert(Staff staff) throws RuntimeException {
-        StaffPo po = this.staffPoMapper.findByNameAndPhone(staff.getName(), staff.getPhone());
-        if (null == po) {
-            StaffPo staffPo = getPo(staff);
-            this.staffPoMapper.save(staffPo);
-            return staffPo.getId();
-        } else {
-            throw new BusinessException(ReturnNo.STAFF_EXIST, String.format(ReturnNo.STAFF_EXIST.getMessage(), staff.getName()));
-        }
-    }
-
-    public String save(Long staffId, Staff staff) {
-        StaffPo po = getPo(staff);
-        po.setId(staffId);
-        this.staffPoMapper.save(po);
-        return String.format(KEY, staff.getId());
-    }
-
-    public void delete(Long id) {
-        this.staffPoMapper.deleteById(id);
     }
 }

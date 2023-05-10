@@ -60,42 +60,6 @@ public class PreferenceDao {
         return po;
     }
 
-    public List<Preference> retrieveAll(Integer page, Integer pageSize) throws RuntimeException {
-        List<PreferencePo> retList = this.preferencePoMapper.findAll(PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (null == retList || retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Preference> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
-    public List<Preference> retrieveByStaffId(Long staffId, Integer page, Integer pageSize) {
-        List<PreferencePo> retList = this.preferencePoMapper.findByStaffId(staffId, PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (null == retList || retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Preference> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
-    public List<Preference> retrieveByType(Byte type, Integer page, Integer pageSize) {
-        List<PreferencePo> retList = this.preferencePoMapper.findByType(type, PageRequest.of(0, MAX_RETURN))
-                .stream().collect(Collectors.toList());
-        if (null == retList || retList.size() == 0)
-            return new ArrayList<>();
-
-        List<Preference> ret = retList.stream().map(po->{
-            return getBo(po,Optional.ofNullable(null));
-        }).collect(Collectors.toList());
-        return ret;
-    }
-
     public Preference findByTypeAndStaffId(Byte type, Long staffId) {
         PreferencePo preferencePo = this.preferencePoMapper.findByTypeAndStaffId(type, staffId);
         if (null == preferencePo) {
@@ -103,31 +67,5 @@ public class PreferenceDao {
         }
 
         return getBo(preferencePo, Optional.empty());
-    }
-
-    public Long findIdyTypeAndStaffId(Byte type, Long staffId) {
-        PreferencePo preferencePo = this.preferencePoMapper.findByTypeAndStaffId(type, staffId);
-        if (null == preferencePo) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", staffId));
-        }
-
-        return preferencePo.getId();
-    }
-
-    public void insert(Preference preference) throws RuntimeException {
-        PreferencePo po = this.preferencePoMapper.findByTypeAndStaffId(preference.getType(), preference.getStaffId());
-
-        PreferencePo preferencePo = getPo(preference);
-        this.preferencePoMapper.save(preferencePo);
-    }
-
-    public void save(Preference preference) {
-        PreferencePo po = getPo(preference);
-        this.preferencePoMapper.save(po);
-    }
-
-    public void delete(Byte type,Long id) {
-        PreferencePo po = this.preferencePoMapper.findByTypeAndStaffId(type, id);
-        this.preferencePoMapper.delete(po);
     }
 }

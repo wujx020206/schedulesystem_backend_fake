@@ -80,7 +80,7 @@ public class PreferenceService {
 
         Preference preference = this.preferenceDao.findByTypeAndStaffId(type, staffId);
         if (null != preference) {
-            throw new BusinessException(ReturnNo.STAFF_EXIST, String.format(ReturnNo.STAFF_EXIST.getMessage(), staffId));
+            throw new BusinessException(ReturnNo.PREFERENCE_EXIST, String.format(ReturnNo.PREFERENCE_EXIST.getMessage(), preference.getId()));
         }
 
         Preference obj = Preference.builder().type(type).staffId(staffId).value(value).build();

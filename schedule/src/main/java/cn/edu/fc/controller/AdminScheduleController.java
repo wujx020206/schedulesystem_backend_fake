@@ -52,7 +52,7 @@ public class AdminScheduleController {
         return new ReturnObject(ReturnNo.OK, scheduleService.retrieveScheduleByDayAndPosition(storeId, localDate, position));
     }
 
-    @GetMapping("/day/{date}/skill/{staffId}/day")
+    @GetMapping("/day/{date}/staff/{staffId}/day")
     public ReturnObject getScheduleByDayAndStaff(@PathVariable Long storeId,
                                                  @PathVariable String date,
                                                  @PathVariable Long staffId) {
@@ -112,7 +112,7 @@ public class AdminScheduleController {
     @DeleteMapping("/{id}/id")
     public ReturnObject deleteById(@PathVariable Long storeId,
                                    @PathVariable Long id) {
-        this.scheduleService.deleteById(id);
+        this.scheduleService.deleteById(storeId, id);
         return new ReturnObject(ReturnNo.OK);
     }
 }

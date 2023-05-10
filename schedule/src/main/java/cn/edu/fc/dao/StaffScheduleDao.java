@@ -83,7 +83,7 @@ public class StaffScheduleDao {
         if (po.isPresent()) {
             return this.getBo(po.get(), Optional.of(key));
         } else {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班结果", id));
+            return null;
         }
     }
 
