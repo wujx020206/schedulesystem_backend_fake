@@ -40,6 +40,9 @@ public class StoreService {
     @Transactional
     public StoreDto findStoreById(Long storeId) {
         Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
         StoreDto ret = StoreDto.builder().id(storeId).name(store.getName()).address(store.getAddress()).size(store.getSize()).build();
         return ret;
     }
@@ -65,6 +68,9 @@ public class StoreService {
     @Transactional
     public void updateStore(Long storeId, String name, String address, Float size) {
         Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
 
         store.setName(name);
         store.setAddress(address);
@@ -75,6 +81,9 @@ public class StoreService {
     @Transactional
     public void deleteStore(Long storeId) {
         Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
         this.storeDao.delete(storeId);
     }
 }
