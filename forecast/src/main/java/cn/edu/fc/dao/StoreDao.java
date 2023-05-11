@@ -47,11 +47,6 @@ public class StoreDao {
         return bo;
     }
 
-    private StorePo getPo(Store bo) {
-        StorePo po = StorePo.builder().id(bo.getId()).name(bo.getName()).address(bo.getAddress()).size(bo.getSize()).build();
-        return po;
-    }
-
     public Store findById(Long id) throws RuntimeException {
         if (null == id) {
             return null;
