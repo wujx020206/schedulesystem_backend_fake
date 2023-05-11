@@ -108,7 +108,7 @@ public class StoreControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("page", "1")
                                 .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class StoreControllerTest {
                         this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_STORE_BY_NAME,"门店x")
                                 .header("authorization", adminToken)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=null)不存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=null)不存在");
     }
 
     @Test
@@ -172,7 +172,7 @@ public class StoreControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
                                 .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺(id=1)已经存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店(id=1)已经存在");
     }
 
     @Test
@@ -208,7 +208,7 @@ public class StoreControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
                                 .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
     }
 
     @Test
@@ -239,6 +239,6 @@ public class StoreControllerTest {
                 this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_STORE,0)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 商铺对象(id=0)不存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
     }
 }

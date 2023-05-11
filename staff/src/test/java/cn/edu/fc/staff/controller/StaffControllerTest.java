@@ -92,7 +92,7 @@ public class StaffControllerTest {
     }
 
     @Test
-    public void findByStoreId() throws Exception {
+    public void findByStoreId1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
@@ -104,6 +104,18 @@ public class StaffControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[0].name", is("张三")))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findByStoreId2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_STORE_STAFFS, 0)
+                                .header("authorization", adminToken)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
     }
 
     @Test
@@ -146,7 +158,7 @@ public class StaffControllerTest {
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
-        String requestJson="{\"name\": \"xicha\", \"position\": \"123\",\"phone\": \"123.0\", \"email\":\"123@qq.com\",\"storeId\": 1}";
+        String requestJson="{\"name\": \"wjx\", \"position\": \"副经理\",\"phone\": \"12345678910\", \"email\":\"123@qq.com\",\"storeId\": 1}";
         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STAFF)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)
@@ -165,7 +177,7 @@ public class StaffControllerTest {
         Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
-        String requestJson="{\"name\": \"张三\", \"position\": \"门店经理\",\"phone\": \"13511111111\", \"email\":\"123@qq.com\",\"storeId\": 0}";
+        String requestJson="{\"name\": \"wjx\", \"position\": \"副经理\",\"phone\": \"12345678910\", \"email\":\"123@qq.com\",\"storeId\": 0}";
 
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STAFF)
@@ -173,6 +185,23 @@ public class StaffControllerTest {
                                 .header("authorization", adminToken)
                                 .content(requestJson)),
                 "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+    }
+
+    @Test
+    public void createStaff3() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+        Mockito.when(redisUtil.bfExist(Mockito.anyString(), (Long) Mockito.any())).thenReturn(false);
+        Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
+
+        String requestJson="{\"name\": \"张三\", \"position\": \"门店经理\",\"phone\": \"13511111111\", \"email\":\"123@qq.com\",\"storeId\": 1}";
+
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_STAFF)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .header("authorization", adminToken)
+                                .content(requestJson)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工(id=1)已经存在");
     }
 
     @Test

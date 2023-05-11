@@ -105,14 +105,13 @@ public class PreferenceDao {
         if (null == preferencePo) {
             return null;
         }
-
         return getBo(preferencePo, Optional.empty());
     }
 
-    public Long findIdyTypeAndStaffId(Byte type, Long staffId) {
+    public Long findIdTypeAndStaffId(Byte type, Long staffId) {
         PreferencePo preferencePo = this.preferencePoMapper.findByTypeAndStaffId(type, staffId);
         if (null == preferencePo) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", staffId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工偏好", null));
         }
 
         return preferencePo.getId();

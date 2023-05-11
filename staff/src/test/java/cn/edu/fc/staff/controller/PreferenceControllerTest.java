@@ -124,7 +124,7 @@ public class PreferenceControllerTest {
     }
 
     @Test
-    public void findPreferenceIDByStaffAndType() throws Exception {
+    public void findPreferenceIDByStaffAndType1() throws Exception {
         Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
         Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
 
@@ -136,6 +136,18 @@ public class PreferenceControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data", is(1)))
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void findPreferenceIDByStaffAndType2() throws Exception {
+        Mockito.when(redisUtil.hasKey(Mockito.anyString())).thenReturn(false);
+        Mockito.when(redisUtil.set(Mockito.anyString(), Mockito.any(), Mockito.anyLong())).thenReturn(true);
+
+        Assertions.assertThrows(NestedServletException.class, ()->
+                        this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_PREFERENCEID_BY_STAFF_AND_TYPE, 0, 0)
+                                .header("authorization", adminToken)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
     }
 
     @Test
@@ -175,7 +187,7 @@ public class PreferenceControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
                                 .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工(id=1)已经存在");
+                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好(id=1)已经存在");
     }
 
     @Test
@@ -187,6 +199,9 @@ public class PreferenceControllerTest {
 
         String requestJson="{\"type\": 0, \"value\": \"1 2 3\"}";
 
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 0)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken));
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 0)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -47,6 +47,11 @@ public class StaffService {
     }
 
     public PageDto<StaffDto> retrieveStaffsByStoreId(Long storeId, Integer page, Integer pageSize) {
+        Store store = this.storeDao.findById(storeId);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
+        }
+
         List<Staff> staffs = this.staffDao.retrieveByShopId(storeId, page, pageSize);
         List<StaffDto> ret = staffs.stream().map(obj -> {
             StaffDto dto = StaffDto.builder().id(obj.getId()).name(obj.getName()).position(obj.getPosition()).phone(obj.getPhone()).email(obj.getEmail()).shopName(obj.getStore().getName()).build();

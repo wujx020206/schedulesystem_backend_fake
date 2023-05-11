@@ -50,6 +50,9 @@ public class StoreService {
     @Transactional
     public StoreDto findStoreByName(String name) {
         Store store = this.storeDao.findByName(name);
+        if (null == store) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", null));
+        }
         StoreDto ret = StoreDto.builder().id(store.getId()).name(name).address(store.getAddress()).size(store.getSize()).build();
         return ret;
     }
