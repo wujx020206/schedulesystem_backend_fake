@@ -157,7 +157,7 @@ public class RuleControllerTest {
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
         String requestJson="{\"value\": \"9\"}";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_RULE, 1,"不存在的规则规则")
+        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_RULE, 1,"不存在的规则")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)
                         .content(requestJson))

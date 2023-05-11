@@ -75,11 +75,10 @@ public class RuleService {
     public void updateRule(String type, Long storeId, String value) {
         Rule bo = this.ruleDao.findByTypeAndStoreId(type, storeId);
         if (null == bo) {
-            Rule rule = Rule.builder().type(type).value(value).storeId(storeId).build();
-            this.ruleDao.insert(rule);
-        } else {
-            bo.setValue(value);
-            this.ruleDao.save(bo.getId(), bo);
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店排班规则", null));
         }
+
+        bo.setValue(value);
+        this.ruleDao.save(bo.getId(), bo);
     }
 }
