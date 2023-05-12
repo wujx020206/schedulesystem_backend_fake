@@ -68,7 +68,6 @@ public class ScheduleService {
                 .build();
     }
 
-    //@JsonIgnore
     public PageDto<StaffScheduleDto> retrieveScheduleByDay(Long storeId, LocalDate date) {
         Store store = this.storeDao.findById(storeId);
         if (null == store) {
@@ -191,15 +190,22 @@ public class ScheduleService {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
-        Staff staff = this.staffDao.retrieveByName(name, 0, MAX_RETURN).get(0);
+        List<Staff> staffs = this.staffDao.retrieveByName(name, 0, MAX_RETURN);
+        if (null == staffs) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", null));
+        }
+
+        Staff staff = staffs.get(0);
         if (storeId != staff.getStoreId()) {
             throw new BusinessException(ReturnNo.RESOURCE_NOTEXIST_IN, String.format(ReturnNo.RESOURCE_NOTEXIST_IN.getMessage(), "员工", staff.getId(), "门店", storeId));
         }
 
         StaffSchedule bo = this.staffScheduleDao.findById(id);
-        if (null != staff) {
+        if (null != bo) {
             StaffSchedule staffSchedule = StaffSchedule.builder().staffId(staff.getId()).start(bo.getStart()).end(bo.getEnd()).build();
             this.staffScheduleDao.save(id, staffSchedule);
+        } else{
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班结果", null));
         }
     }
 
@@ -211,7 +217,7 @@ public class ScheduleService {
 
         StaffSchedule bo = this.staffScheduleDao.findById(id);
         if (null == bo) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班安排", id));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班结果", id));
         }
 
         this.staffScheduleDao.delete(id);

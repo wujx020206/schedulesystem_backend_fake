@@ -1,6 +1,7 @@
 package cn.edu.fc.dao;
 
 import cn.edu.fc.dao.bo.Rule;
+import cn.edu.fc.dao.bo.ScheduleResult;
 import cn.edu.fc.dao.bo.StaffSchedule;
 import cn.edu.fc.javaee.core.exception.BusinessException;
 import cn.edu.fc.javaee.core.model.ReturnNo;
@@ -94,7 +95,11 @@ public class StaffScheduleDao {
     }
 
     public Long findIdByStaffIdAndStartAndEnd(Long staffId, LocalDateTime start, LocalDateTime end) {
-        return this.staffSchedulePoMapper.findByStaffIdAndStartAndEnd(staffId, start, end).getId();
+        StaffSchedulePo staffSchedulePo = this.staffSchedulePoMapper.findByStaffIdAndStartAndEnd(staffId, start, end);
+        if (null == staffSchedulePo) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "排班结果", null));
+        }
+        return staffSchedulePo.getId();
     }
 
     public Long insert(StaffSchedule staffSchedule) {
