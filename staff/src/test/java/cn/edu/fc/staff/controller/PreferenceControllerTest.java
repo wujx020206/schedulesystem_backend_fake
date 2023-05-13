@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.NestedServletException;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = StaffApplication.class)
 @AutoConfigureMockMvc
@@ -146,8 +147,14 @@ public class PreferenceControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_PREFERENCEID_BY_STAFF_AND_TYPE, 0, 0)
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_PREFERENCEID_BY_STAFF_AND_TYPE, 0, 0)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -186,8 +193,15 @@ public class PreferenceControllerTest {
                         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 1)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
-                                .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好(id=1)已经存在");
+                                .content(requestJson)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 1)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken)
+                    .content(requestJson));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好(id=1)已经存在");
+        }
     }
 
     @Test
@@ -206,8 +220,15 @@ public class PreferenceControllerTest {
                         this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 0)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
-                                .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=0)不存在");
+                                .content(requestJson)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.post(CREATE_PREFERENCE, 0)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken)
+                    .content(requestJson));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -245,8 +266,15 @@ public class PreferenceControllerTest {
                         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_PREFERENCE, 1, 3, 2)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)
-                                .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+                                .content(requestJson)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_PREFERENCE, 1, 3, 2)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken)
+                    .content(requestJson));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -279,7 +307,13 @@ public class PreferenceControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_PREFERENCE,1, 2)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工偏好对象(id=null)不存在");
+        }
     }
 }

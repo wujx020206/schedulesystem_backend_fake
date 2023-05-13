@@ -128,7 +128,7 @@ public class StaffDao {
             this.staffPoMapper.save(staffPo);
             return staffPo.getId();
         } else {
-            throw new BusinessException(ReturnNo.STAFF_EXIST, String.format(ReturnNo.STAFF_EXIST.getMessage(), staff.getId()));
+            throw new BusinessException(ReturnNo.STAFF_EXIST, String.format(ReturnNo.STAFF_EXIST.getMessage(), po.getId()));
         }
     }
 
