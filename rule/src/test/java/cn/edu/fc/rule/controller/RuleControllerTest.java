@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.NestedServletException;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = RuleApplication.class)
 @AutoConfigureMockMvc
@@ -94,8 +95,16 @@ public class RuleControllerTest {
                                         .header("authorization", adminToken)
                                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                                         .param("page", "1")
-                                        .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                        .param("pageSize", "10")));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_RULES_BY_STORE, 0)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("page", "1")
+                    .param("pageSize", "10"));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -126,8 +135,16 @@ public class RuleControllerTest {
                                 .header("authorization", adminToken)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("page", "1")
-                                .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店排班规则对象(id=null)不存在");
+                                .param("pageSize", "10")));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_RULES_BY_STORE_AND_TYPE, 1, "不存在的规则")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("page", "1")
+                    .param("pageSize", "10"));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店排班规则对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -157,14 +174,18 @@ public class RuleControllerTest {
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
         String requestJson="{\"value\": \"9\"}";
-        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_RULE, 1,"不存在的规则")
+        Assertions.assertThrows(NestedServletException.class, ()->
+                this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_RULE, 1,"不存在的规则")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header("authorization", adminToken)
-                        .content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(0))
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn().getResponse().getContentAsString();
+                        .content(requestJson)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_RULE, 1,"不存在的规则")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken)
+                    .content(requestJson));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店排班规则对象(id=null)不存在");
+        }
     }
 }
