@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = ScheduleApplication.class)
 @AutoConfigureMockMvc
@@ -89,8 +90,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                 this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_DAY, 0, "2023-04-06")
                     .header("authorization", adminToken)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_DAY, 0, "2023-04-06")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -132,8 +139,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_SKILL, 0, "2023-04-01", "导购")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_SKILL, 0, "2023-04-01", "导购")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -160,8 +173,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_POSITION, 0, "2023-04-01", "副经理")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_POSITION, 0, "2023-04-01", "副经理")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -188,8 +207,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_STAFF, 0, "2023-04-01", 3)
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_STAFF, 0, "2023-04-01", 3)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -230,8 +255,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK, 0, "2023-03-27")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK, 0, "2023-03-27")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -260,8 +291,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_SKILL, 0, "2023-03-27", "导购")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_SKILL, 0, "2023-03-27", "导购")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -288,8 +325,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_POSITION, 0, "2023-03-27", "副经理")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_POSITION, 0, "2023-03-27", "副经理")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -317,8 +360,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_STAFF, 0, "2023-03-27", 3)
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_SCHEDULE_BY_WEEK_AND_STAFF, 0, "2023-03-27", 3)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -344,8 +393,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_ID_BY_STAFF_AND_PERIOD, 1, 1, "2023-03-29 10:30:00", "2023-03-29 16:30:00")
                                 .header("authorization", adminToken)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 排班结果对象(id=0)不存在");
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(FIND_ID_BY_STAFF_AND_PERIOD, 1, 1, "2023-03-29 10:30:00", "2023-03-29 16:30:00")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 排班结果对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -375,8 +430,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 0,1,"李四")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=2)不存在在门店对象(id=2)中");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 0,1,"李四")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -389,8 +450,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 1,1,"不存在的员工")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=1)不存在");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 1,1,"不存在的员工")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -403,8 +470,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 2,1,"李四")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 2,1,"李四")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 员工对象(id=2)不存在在门店对象(id=2)中");
+        }
     }
 
     @Test
@@ -415,10 +488,16 @@ public class ScheduleControllerTest {
         Mockito.when(redisUtil.bfAdd(Mockito.anyString(), Mockito.any())).thenReturn(true);
 
         Assertions.assertThrows(NestedServletException.class, ()->
-                        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 2,10000,"李四")
+                        this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 1,10000,"李四")
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.put(UPDATE_SCHEDULE, 1,10000,"李四")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 排班结果对象(id=null)不存在");
+        }
     }
 
     @Test
@@ -448,8 +527,14 @@ public class ScheduleControllerTest {
         Assertions.assertThrows(NestedServletException.class, ()->
                         this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SCHEDULE, 0,1)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .header("authorization", adminToken)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .header("authorization", adminToken)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SCHEDULE, 0,1)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -464,5 +549,12 @@ public class ScheduleControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header("authorization", adminToken)),
                 "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 排班结果对象(id=0)不存在");
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.delete(DELETE_SCHEDULE, 1,0)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .header("authorization", adminToken));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 排班结果对象(id=0)不存在");
+        }
     }
 }
