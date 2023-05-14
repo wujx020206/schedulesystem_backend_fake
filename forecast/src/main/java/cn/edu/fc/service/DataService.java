@@ -35,7 +35,7 @@ public class DataService {
     public PageDto<DataDto> retrieveDataByStoreId(Long storeId, Integer page, Integer pageSize) {
         Store store = this.storeDao.findById(storeId);
         if (null == store) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "门店", storeId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
         List<Data> dataList = this.dataDao.retrieveByStoreId(storeId, page, pageSize);
@@ -49,7 +49,7 @@ public class DataService {
     public PageDto<DataDto> retrieveDataByStoreIdAndDateBetween(Long storeId, LocalDate beginDate, LocalDate endDate, Integer page, Integer pageSize) {
         Store store = this.storeDao.findById(storeId);
         if (null == store) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "门店", storeId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
         List<Data> dataList = this.dataDao.retrieveByStoreIdAndDateBetween(storeId, beginDate, endDate, page, pageSize);
@@ -63,7 +63,7 @@ public class DataService {
     public PageDto<DataDto> retrieveDataByStoreIdAndDate(Long storeId, LocalDate date, Integer page, Integer pageSize) {
         Store store = this.storeDao.findById(storeId);
         if (null == store) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "门店", storeId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
         List<Data> dataList = this.dataDao.retrieveByStoreIdAndDate(storeId, date, page, pageSize);
@@ -77,7 +77,7 @@ public class DataService {
     public DataDto findDataStoreIdAndDateAndBeginTimeAndEndTime(Long storeId, LocalDate date, String beginTime, String endTime) {
         Store store = this.storeDao.findById(storeId);
         if (null == store) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "门店", storeId));
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
         Data data = this.dataDao.findByStoreIdAndDateAndBeginTimeAndEndTime(storeId, date, beginTime, endTime);

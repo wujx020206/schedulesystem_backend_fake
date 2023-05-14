@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.NestedServletException;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = DataApplication.class)
 @AutoConfigureMockMvc
@@ -77,8 +78,16 @@ public class DataControllerTest {
                                 .header("authorization", adminToken)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("page", "1")
-                                .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .param("pageSize", "10")));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_STORE,0)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("page", "1")
+                    .param("pageSize", "10"));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -115,8 +124,17 @@ public class DataControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(requestJson)
                                 .param("page", "1")
-                                .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .param("pageSize", "10")));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_PERIOD,0)
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(requestJson)
+                    .param("page", "1")
+                    .param("pageSize", "10"));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -149,8 +167,16 @@ public class DataControllerTest {
                                 .header("authorization", adminToken)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .param("page", "1")
-                                .param("pageSize", "10")),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .param("pageSize", "10")));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_DATE, 0, "2023-04-01")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("page", "1")
+                    .param("pageSize", "10"));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 
     @Test
@@ -182,7 +208,14 @@ public class DataControllerTest {
                         this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_DATE_AND_TIME, 0, "2023-04-01")
                                 .header("authorization", adminToken)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(requestJson)),
-                "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+                                .content(requestJson)));
+        try {
+            this.mockMvc.perform(MockMvcRequestBuilders.get(RETRIEVE_DATA_BY_DATE_AND_TIME, 0, "2023-04-01")
+                    .header("authorization", adminToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(requestJson));
+        } catch (NestedServletException e) {
+            assertEquals(e.getMessage(), "Request processing failed; nested exception is cn.edu.fc.javaee.core.exception.BusinessException: 门店对象(id=0)不存在");
+        }
     }
 }
