@@ -18,12 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StoreServiceTest {
     @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private RedisUtil redisUtil;
-
-    @Autowired
     private StoreService storeService;
 
     @Test
