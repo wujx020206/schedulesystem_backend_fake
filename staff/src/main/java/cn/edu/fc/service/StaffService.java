@@ -62,6 +62,9 @@ public class StaffService {
 
     public StaffDto findStaffById(Long staffId) {
         Staff obj = this.staffDao.findById(staffId);
+        if (null == obj) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "员工", null));
+        }
         StaffDto dto = StaffDto.builder().id(obj.getId()).name(obj.getName()).position(obj.getPosition()).phone(obj.getPhone()).email(obj.getEmail()).shopName(obj.getStore().getName()).build();
         return dto;
     }
