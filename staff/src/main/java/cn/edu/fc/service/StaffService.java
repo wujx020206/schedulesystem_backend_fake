@@ -93,6 +93,14 @@ public class StaffService {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "门店", storeId));
         }
 
+        if (phone == null || !phone.matches("[1][0-9]{10}")) {
+            throw new BusinessException(ReturnNo.PHONENUMBER_ERROR, ReturnNo.PHONENUMBER_ERROR.getMessage());
+        }
+
+        if (email == null || !email.matches("^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$")) {
+            throw new BusinessException(ReturnNo.EMAIL_ERROR, ReturnNo.EMAIL_ERROR.getMessage());
+        }
+
         Staff staff = Staff.builder().name(name).position(position).phone(phone).email(email).storeId(storeId).build();
         Long staffId = this.staffDao.insert(staff);
 
